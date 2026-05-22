@@ -1,1633 +1,705 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<meta name="theme-color" content="#1a3a6b"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-<meta name="apple-mobile-web-app-title" content="AA & PADLOCK"/>
-<title>AA &amp; PADLOCK INFO</title>
-<link rel="manifest" href="manifest.json"/>
-<link rel="apple-touch-icon" href="icon-192.png"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AA INFO</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f4c81"/>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
-:root {
-  --navy: #1a3a6b;
-  --navy-dark: #0f2347;
-  --navy-mid: #234a8a;
-  --gold: #f5a623;
-  --gold-light: #ffc846;
-  --sky: #e8f0fe;
-  --sky-mid: #c5d8f8;
-  --white: #ffffff;
-  --off-white: #f7f9ff;
-  --text: #0f1f3d;
-  --text-mid: #3a5080;
-  --text-light: #7a90b8;
-  --success: #16a34a;
-  --success-bg: #dcfce7;
-  --danger: #dc2626;
-  --danger-bg: #fee2e2;
-  --warn: #d97706;
-  --warn-bg: #fef3c7;
-  --border: #d0ddf5;
-  --shadow: 0 4px 24px rgba(26,58,107,0.10);
-  --shadow-lg: 0 8px 40px rgba(26,58,107,0.18);
-  --radius: 16px;
-  --radius-sm: 10px;
-  --radius-xs: 6px;
-  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:var(--off-white);color:var(--text);font-family:'Sora',sans-serif;overflow:hidden;}
-/* ── LAYOUT ── */
-#app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;background:var(--white);box-shadow:var(--shadow-lg);position:relative;overflow:hidden;}
-/* ── PAGES ── */
-.page{display:none;flex-direction:column;height:100%;overflow:hidden;}
-.page.active{display:flex;}
-/* ── HEADER ── */
-.header{background:var(--navy);color:var(--white);padding:16px 20px 14px;flex-shrink:0;position:relative;}
-.header-top{display:flex;align-items:center;justify-content:space-between;}
-.header-title{font-size:18px;font-weight:800;letter-spacing:-0.3px;line-height:1.1;}
-.header-sub{font-size:11px;color:var(--sky-mid);font-weight:400;margin-top:2px;}
-.header-badge{background:var(--gold);color:var(--navy-dark);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:0.5px;}
-/* ── BOTTOM NAV ── */
-.bottom-nav{display:flex;background:var(--white);border-top:2px solid var(--border);flex-shrink:0;z-index:100;}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px 8px;cursor:pointer;color:var(--text-light);border:none;background:none;font-family:'Sora',sans-serif;transition:var(--transition);position:relative;gap:4px;}
-.nav-btn.active{color:var(--navy);}
-.nav-btn.active::after{content:'';position:absolute;top:0;left:20%;right:20%;height:3px;background:var(--navy);border-radius:0 0 4px 4px;}
-.nav-icon{font-size:22px;line-height:1;}
-.nav-label{font-size:10px;font-weight:600;letter-spacing:0.3px;}
-/* ── SCROLL AREA ── */
-.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
-.scroll-area::-webkit-scrollbar{width:4px;}
-.scroll-area::-webkit-scrollbar-track{background:transparent;}
-.scroll-area::-webkit-scrollbar-thumb{background:var(--sky-mid);border-radius:4px;}
-/* ── DASHBOARD ── */
-.dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px 0;}
-.stat-card{background:var(--sky);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;border:1.5px solid var(--border);transition:var(--transition);}
-.stat-card.aa-yes{background:#e0f2fe;border-color:#93c5fd;}
-.stat-card.aa-no{background:#fef9ee;border-color:#fcd34d;}
-.stat-card.padlock{background:#f0fdf4;border-color:#86efac;}
-.stat-num{font-size:26px;font-weight:800;color:var(--navy);line-height:1;}
-.stat-label{font-size:10px;font-weight:600;color:var(--text-mid);margin-top:4px;line-height:1.3;}
-/* ── SEARCH BAR ── */
-.search-wrap{padding:14px 16px 0;}
-.search-box{display:flex;align-items:center;gap:8px;background:var(--sky);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:0 14px;transition:var(--transition);}
-.search-box:focus-within{border-color:var(--navy);background:var(--white);box-shadow:0 0 0 3px rgba(26,58,107,0.12);}
-.search-icon{color:var(--text-light);font-size:16px;flex-shrink:0;}
-.search-input{flex:1;border:none;background:none;padding:11px 0;font-size:14px;font-family:'Sora',sans-serif;color:var(--text);outline:none;}
-.search-input::placeholder{color:var(--text-light);}
-.search-clear{background:none;border:none;color:var(--text-light);cursor:pointer;font-size:18px;padding:4px;line-height:1;display:none;}
-.search-clear.show{display:block;}
-/* ── QUICK FILTERS ── */
-.filters-wrap{padding:10px 16px 0;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
-.filters-wrap::-webkit-scrollbar{display:none;}
-.filter-chip{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-size:12px;font-weight:600;color:var(--text-mid);cursor:pointer;transition:var(--transition);white-space:nowrap;}
-.filter-chip.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
-/* ── SECTION TITLE ── */
-.section-title{padding:14px 16px 8px;font-size:12px;font-weight:700;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;}
-/* ── SITE CARD (dashboard) ── */
-.site-card{margin:0 16px 10px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden;}
-.site-card:active{transform:scale(0.98);}
-.site-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
-.site-id{font-size:15px;font-weight:700;color:var(--navy);font-family:'JetBrains Mono',monospace;}
-.site-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
-.badge-yes{background:var(--success-bg);color:var(--success);}
-.badge-no{background:var(--danger-bg);color:var(--danger);}
-.badge-na{background:var(--warn-bg);color:var(--warn);}
-.badge-padlock-yes{background:#f0fdf4;color:#15803d;}
-.badge-padlock-no{background:#fef2f2;color:#b91c1c;}
-.site-date{font-size:10px;color:var(--text-light);font-weight:500;}
-.site-note-preview{font-size:11px;color:var(--text-mid);margin-top:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
-.site-card-accent{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px;}
-.accent-yes{background:var(--success);}
-.accent-no{background:var(--danger);}
-.accent-mix{background:var(--gold);}
-/* ── EMPTY STATE ── */
-.empty-state{text-align:center;padding:60px 30px;color:var(--text-light);}
-.empty-icon{font-size:52px;margin-bottom:16px;opacity:0.5;}
-.empty-title{font-size:16px;font-weight:700;color:var(--text-mid);margin-bottom:6px;}
-.empty-sub{font-size:13px;line-height:1.5;}
-/* ── FAB ── */
-.fab{position:absolute;bottom:76px;right:20px;width:58px;height:58px;border-radius:50%;background:var(--navy);color:var(--white);border:none;font-size:28px;cursor:pointer;box-shadow:0 6px 24px rgba(26,58,107,0.35);display:flex;align-items:center;justify-content:center;z-index:200;transition:var(--transition);}
-.fab:active{transform:scale(0.92);}
-/* ── SITES PAGE ── */
-.sites-header{padding:14px 16px 0;}
-.sites-filters{display:flex;gap:8px;overflow-x:auto;padding:10px 16px 0;scrollbar-width:none;}
-.sites-filters::-webkit-scrollbar{display:none;}
-.site-row{margin:0 16px 8px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:var(--transition);}
-.site-row:active{transform:scale(0.99);}
-.site-row-main{display:flex;align-items:center;padding:12px 14px;gap:10px;}
-.site-row-id{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--navy);flex:1;min-width:0;}
-.site-row-badges{display:flex;gap:5px;flex-shrink:0;}
-.site-row-arrow{color:var(--text-light);font-size:14px;flex-shrink:0;}
-/* ── MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(10,20,50,0.55);z-index:1000;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--white);border-radius:24px 24px 0 0;width:100%;max-width:480px;max-height:92vh;display:flex;flex-direction:column;animation:slideUp 0.28s cubic-bezier(0.4,0,0.2,1);}
-@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;}
-.modal-header{padding:16px 20px 14px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.modal-title{font-size:17px;font-weight:700;color:var(--navy);}
-.modal-close{background:var(--sky);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--text-mid);}
-.modal-body{padding:20px;overflow-y:auto;flex:1;}
-.modal-footer{padding:16px 20px;border-top:1.5px solid var(--border);display:flex;gap:10px;}
-/* ── FORM ── */
-.form-group{margin-bottom:18px;}
-.form-label{font-size:12px;font-weight:700;color:var(--text-mid);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;display:block;}
-.form-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:'Sora',sans-serif;color:var(--text);background:var(--white);outline:none;transition:var(--transition);}
-.form-input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,58,107,0.1);}
-.form-textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:'Sora',sans-serif;color:var(--text);background:var(--white);outline:none;transition:var(--transition);resize:vertical;min-height:72px;line-height:1.5;}
-.form-textarea:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,58,107,0.1);}
-/* ── TOGGLE GROUP ── */
-.toggle-group{display:flex;gap:0;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
-.toggle-opt{flex:1;padding:10px 8px;border:none;background:var(--white);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;color:var(--text-mid);cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:5px;}
-.toggle-opt:not(:last-child){border-right:1.5px solid var(--border);}
-.toggle-opt.active-yes{background:var(--success-bg);color:var(--success);}
-.toggle-opt.active-no{background:var(--danger-bg);color:var(--danger);}
-/* ── BUTTONS ── */
-.btn{padding:13px 20px;border-radius:var(--radius-sm);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px;}
-.btn-primary{background:var(--navy);color:var(--white);flex:1;}
-.btn-primary:active{background:var(--navy-dark);}
-.btn-secondary{background:var(--sky);color:var(--navy);border:1.5px solid var(--border);}
-.btn-secondary:active{background:var(--sky-mid);}
-.btn-danger{background:var(--danger-bg);color:var(--danger);border:1.5px solid #fca5a5;}
-.btn-danger:active{background:#fecaca;}
-.btn-success{background:var(--success-bg);color:var(--success);border:1.5px solid #86efac;}
-.btn-gold{background:var(--gold);color:var(--navy-dark);}
-.btn-full{width:100%;margin-bottom:10px;}
-/* ── SETTINGS PAGE ── */
-.settings-section{padding:16px 16px 0;}
-.settings-section-title{font-size:11px;font-weight:700;color:var(--text-light);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:10px;}
-.settings-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;}
-.settings-row{display:flex;align-items:center;padding:15px 16px;gap:14px;cursor:pointer;transition:var(--transition);}
-.settings-row:not(:last-child){border-bottom:1px solid var(--border);}
-.settings-row:active{background:var(--sky);}
-.settings-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.si-blue{background:#dbeafe;}
-.si-green{background:#dcfce7;}
-.si-gold{background:#fef3c7;}
-.si-red{background:#fee2e2;}
-.si-purple{background:#ede9fe;}
-.si-cyan{background:#cffafe;}
-.settings-row-text{flex:1;}
-.settings-row-title{font-size:14px;font-weight:600;color:var(--text);}
-.settings-row-sub{font-size:12px;color:var(--text-light);margin-top:2px;}
-.settings-row-arrow{color:var(--text-light);font-size:16px;}
-/* ── DETAIL MODAL ── */
-.detail-section{margin-bottom:20px;}
-.detail-label{font-size:11px;font-weight:700;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
-.detail-value{font-size:15px;font-weight:600;color:var(--text);}
-.detail-note{font-size:13px;color:var(--text-mid);line-height:1.6;background:var(--sky);padding:12px;border-radius:var(--radius-sm);border-left:3px solid var(--navy);}
-.detail-badge-lg{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:700;padding:8px 16px;border-radius:12px;}
-/* ── TOAST ── */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy-dark);color:var(--white);padding:12px 22px;border-radius:25px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:all 0.28s cubic-bezier(0.4,0,0.2,1);white-space:nowrap;max-width:90vw;text-align:center;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-/* ── CONFIRM MODAL ── */
-.confirm-overlay{position:fixed;inset:0;background:rgba(10,20,50,0.6);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
-.confirm-overlay.open{display:flex;}
-.confirm-box{background:var(--white);border-radius:20px;padding:28px 24px 20px;width:100%;max-width:340px;text-align:center;}
-.confirm-icon{font-size:44px;margin-bottom:14px;}
-.confirm-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;}
-.confirm-msg{font-size:14px;color:var(--text-mid);line-height:1.5;margin-bottom:22px;}
-.confirm-btns{display:flex;gap:10px;}
-/* ── AA CERT PAGE ── */
-.cert-hero{background:linear-gradient(135deg,#1a3a6b 0%,#234a8a 60%,#1a5c3a 100%);padding:18px 16px 16px;margin:0;}
-.cert-hero-row{display:flex;align-items:center;gap:14px;}
-.cert-hero-icon{width:52px;height:52px;background:rgba(255,255,255,0.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;border:2px solid rgba(255,255,255,0.25);}
-.cert-hero-text{flex:1;}
-.cert-hero-title{font-size:15px;font-weight:800;color:#fff;line-height:1.2;}
-.cert-hero-sub{font-size:11px;color:rgba(255,255,255,0.65);margin-top:3px;}
-.cert-stats-row{display:flex;gap:8px;margin-top:14px;}
-.cert-stat{flex:1;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px 8px;text-align:center;border:1px solid rgba(255,255,255,0.18);}
-.cert-stat-num{font-size:20px;font-weight:800;color:#fff;line-height:1;}
-.cert-stat-label{font-size:9px;color:rgba(255,255,255,0.65);font-weight:600;margin-top:3px;line-height:1.2;}
-.cert-search-bar{padding:12px 16px 0;}
-.cert-filters{display:flex;gap:7px;overflow-x:auto;padding:10px 16px 0;scrollbar-width:none;}
-.cert-filters::-webkit-scrollbar{display:none;}
-.cert-item{margin:0 16px 10px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:var(--transition);position:relative;}
-.cert-item:active{transform:scale(0.98);}
-.cert-item-left{width:5px;position:absolute;left:0;top:0;bottom:0;border-radius:4px 0 0 4px;}
-.cert-item-left.received{background:#16a34a;}
-.cert-item-left.pending{background:#f5a623;}
-.cert-item-left.missing{background:#dc2626;}
-.cert-item-body{padding:13px 14px 13px 18px;}
-.cert-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
-.cert-item-id{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--navy);}
-.cert-item-date{font-size:10px;color:var(--text-light);font-weight:500;white-space:nowrap;}
-.cert-status-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin-top:7px;}
-.cert-status-received{background:#dcfce7;color:#15803d;}
-.cert-status-pending{background:#fef3c7;color:#92400e;}
-.cert-status-missing{background:#fee2e2;color:#b91c1c;}
-.cert-item-meta{font-size:11px;color:var(--text-light);margin-top:5px;line-height:1.4;}
-.cert-item-from{font-size:11px;color:var(--text-mid);margin-top:4px;font-weight:500;}
-.cert-fab{position:absolute;bottom:76px;right:20px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#1a3a6b,#1a5c3a);color:var(--white);border:none;font-size:28px;cursor:pointer;box-shadow:0 6px 24px rgba(26,92,58,0.4);display:flex;align-items:center;justify-content:center;z-index:200;transition:var(--transition);}
-.cert-fab:active{transform:scale(0.92);}
-/* Cert modal form */
-.status-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.status-opt{padding:12px 6px;border-radius:var(--radius-sm);border:2px solid var(--border);background:var(--white);font-family:'Sora',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:center;transition:var(--transition);line-height:1.3;}
-.status-opt.sel-received{background:#dcfce7;border-color:#16a34a;color:#15803d;}
-.status-opt.sel-pending{background:#fef3c7;border-color:#f5a623;color:#92400e;}
-.status-opt.sel-missing{background:#fee2e2;border-color:#dc2626;color:#b91c1c;}
-/* ── PRINT STYLES ── */
-@media print{
-  body{overflow:auto!important;background:white!important;}
-  #app{max-width:none!important;box-shadow:none!important;height:auto!important;overflow:visible!important;}
-  .bottom-nav,.fab,.header,.modal-overlay,.toast,.confirm-overlay{display:none!important;}
-  .page{display:block!important;height:auto!important;overflow:visible!important;}
-  #print-area{display:block!important;}
+
+body{
+background:#f3f6fb;
+color:#222;
+padding-bottom:90px;
 }
-#print-area{display:none;}
-/* ── RESPONSIVE ── */
-@media(min-width:481px){
-  #app{border-radius:20px;margin:20px auto;height:calc(100vh - 40px);}
+
+header{
+background:#0f4c81;
+color:white;
+padding:18px;
+font-size:22px;
+font-weight:bold;
+text-align:center;
 }
-/* ── LOADING ── */
-.loading-spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-/* ── HIGHLIGHT ── */
-.highlight{background:#fef3c7;border-radius:3px;padding:0 2px;}
-/* ── COUNT BADGE ── */
-.count-badge{background:var(--gold);color:var(--navy-dark);font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px;margin-left:5px;}
+
+.container{
+padding:15px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-bottom:20px;
+}
+
+.card{
+background:white;
+padding:15px;
+border-radius:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+text-align:center;
+}
+
+.card h2{
+font-size:24px;
+margin-top:8px;
+color:#0f4c81;
+}
+
+.search-box{
+margin-bottom:15px;
+}
+
+.search-box input{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+font-size:16px;
+}
+
+.filters{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+overflow:auto;
+}
+
+.filters button{
+padding:10px 14px;
+border:none;
+border-radius:10px;
+background:#d9e7f5;
+cursor:pointer;
+white-space:nowrap;
+}
+
+.filters button.active{
+background:#0f4c81;
+color:white;
+}
+
+.site-list{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.site-card{
+background:white;
+padding:14px;
+border-radius:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.08);
+}
+
+.site-card h3{
+margin-bottom:8px;
+color:#0f4c81;
+}
+
+.site-card p{
+margin:4px 0;
+font-size:14px;
+}
+
+textarea{
+width:100%;
+margin-top:8px;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+resize:none;
+}
+
+select,input{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+margin-top:8px;
+}
+
+.fab{
+position:fixed;
+right:20px;
+bottom:80px;
+width:60px;
+height:60px;
+border-radius:50%;
+background:#0f4c81;
+color:white;
+font-size:26px;
+display:flex;
+align-items:center;
+justify-content:center;
+border:none;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+cursor:pointer;
+}
+
+.bottom-nav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px 0;
+box-shadow:0 -2px 6px rgba(0,0,0,0.1);
+}
+
+.bottom-nav button{
+background:none;
+border:none;
+font-size:13px;
+display:flex;
+flex-direction:column;
+align-items:center;
+color:#555;
+}
+
+.bottom-nav button.active{
+color:#0f4c81;
+font-weight:bold;
+}
+
+.page{
+display:none;
+}
+
+.page.active{
+display:block;
+}
+
+.settings-btn{
+background:#0f4c81;
+color:white;
+padding:12px;
+border:none;
+border-radius:10px;
+margin-top:10px;
+width:100%;
+cursor:pointer;
+}
+
+.latest{
+margin-top:20px;
+}
+
+.latest h3{
+margin-bottom:10px;
+}
+
+@media(max-width:700px){
+.cards{
+grid-template-columns:1fr;
+}
+}
 </style>
 </head>
 <body>
-<div id="app">
 
-  <!-- ═══════════════════ DASHBOARD PAGE ═══════════════════ -->
-  <div class="page active" id="page-dashboard">
-    <div class="header">
-      <div class="header-top">
-        <div>
-          <div class="header-title">📡 AA &amp; PADLOCK INFO</div>
-          <div class="header-sub">Telecom Site Management</div>
-        </div>
-        <span class="header-badge" id="dash-total-badge">0 Sites</span>
-      </div>
-    </div>
+<header>AA INFO</header>
 
-    <div class="scroll-area">
-      <!-- Stats -->
-      <div class="dash-stats">
-        <div class="stat-card aa-yes">
-          <div class="stat-num" id="stat-aa-yes">0</div>
-          <div class="stat-label">AA<br/>Total YES</div>
-        </div>
-        <div class="stat-card aa-no">
-          <div class="stat-num" id="stat-aa-no">0</div>
-          <div class="stat-label">AA<br/>Total N/A</div>
-        </div>
-        <div class="stat-card padlock">
-          <div class="stat-num" id="stat-padlock">0</div>
-          <div class="stat-label">Padlock<br/>Total Sites</div>
-        </div>
-      </div>
+<!-- DASHBOARD -->
+<div class="container page active" id="dashboardPage">
 
-      <!-- Search -->
-      <div class="search-wrap">
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input class="search-input" id="dash-search" type="text" placeholder="Search by Site ID or notes…" autocomplete="off"/>
-          <button class="search-clear" id="dash-search-clear" onclick="clearDashSearch()">✕</button>
-        </div>
-      </div>
-
-      <!-- Quick Filters -->
-      <div class="filters-wrap">
-        <div class="filter-chip active" data-filter="all" onclick="setDashFilter(this)">All Sites</div>
-        <div class="filter-chip" data-filter="aa-yes" onclick="setDashFilter(this)">AA: YES ✅</div>
-        <div class="filter-chip" data-filter="aa-no" onclick="setDashFilter(this)">AA: NO ❌</div>
-        <div class="filter-chip" data-filter="padlock-yes" onclick="setDashFilter(this)">Padlock: YES 🔒</div>
-        <div class="filter-chip" data-filter="padlock-no" onclick="setDashFilter(this)">Padlock: NO 🔓</div>
-        <div class="filter-chip" data-filter="recent" onclick="setDashFilter(this)">Recent 🕐</div>
-      </div>
-
-      <div class="section-title">Latest Updated Sites</div>
-
-      <!-- Site Cards -->
-      <div id="dash-cards-container">
-        <div class="empty-state">
-          <div class="empty-icon">📡</div>
-          <div class="empty-title">No sites yet</div>
-          <div class="empty-sub">Tap the <strong>+</strong> button to add your first telecom site</div>
-        </div>
-      </div>
-      <div style="height:80px;"></div>
-    </div>
-
-    <!-- FAB -->
-    <button class="fab" onclick="openAddModal()">＋</button>
-  </div>
-
-  <!-- ═══════════════════ SITES PAGE ═══════════════════ -->
-  <div class="page" id="page-sites">
-    <div class="header">
-      <div class="header-top">
-        <div>
-          <div class="header-title">📋 All Sites</div>
-          <div class="header-sub">Complete site registry</div>
-        </div>
-        <button class="header-badge" style="cursor:pointer;border:none;background:var(--gold);color:var(--navy-dark);font-weight:700;font-size:10px;padding:4px 10px;border-radius:20px;" onclick="openAddModal()">+ ADD</button>
-      </div>
-      <!-- Inline search for sites page -->
-      <div style="margin-top:10px;">
-        <div class="search-box" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.25);">
-          <span class="search-icon" style="color:rgba(255,255,255,0.7);">🔍</span>
-          <input class="search-input" id="sites-search" type="text" placeholder="Search sites…" style="color:white;" autocomplete="off"/>
-          <button class="search-clear" id="sites-search-clear" onclick="clearSitesSearch()" style="color:rgba(255,255,255,0.7);">✕</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Filters -->
-    <div class="sites-filters">
-      <div class="filter-chip active" data-filter="all" onclick="setSitesFilter(this)">All</div>
-      <div class="filter-chip" data-filter="aa-yes" onclick="setSitesFilter(this)">AA YES</div>
-      <div class="filter-chip" data-filter="aa-no" onclick="setSitesFilter(this)">AA NO</div>
-      <div class="filter-chip" data-filter="padlock-yes" onclick="setSitesFilter(this)">Padlock YES</div>
-      <div class="filter-chip" data-filter="padlock-no" onclick="setSitesFilter(this)">Padlock NO</div>
-      <div class="filter-chip" data-filter="both-yes" onclick="setSitesFilter(this)">Both YES</div>
-    </div>
-    <div style="padding:8px 16px 0;font-size:12px;color:var(--text-light);font-weight:600;" id="sites-count-label"></div>
-
-    <div class="scroll-area" style="padding-top:6px;">
-      <div id="sites-list-container"></div>
-      <div style="height:20px;"></div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════ SETTINGS PAGE ═══════════════════ -->
-  <div class="page" id="page-settings">
-    <div class="header">
-      <div class="header-top">
-        <div>
-          <div class="header-title">⚙️ Settings &amp; Backup</div>
-          <div class="header-sub">Data management &amp; exports</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="scroll-area">
-      <!-- Database Info -->
-      <div class="settings-section">
-        <div class="settings-section-title">Database Info</div>
-        <div class="settings-card" style="background:var(--sky);border-color:var(--sky-mid);">
-          <div style="padding:16px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-              <span style="font-size:13px;font-weight:700;color:var(--text-mid);">Total Sites</span>
-              <span style="font-size:20px;font-weight:800;color:var(--navy);" id="settings-total">0</span>
-            </div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <div style="flex:1;min-width:80px;background:var(--white);border-radius:10px;padding:10px;text-align:center;">
-                <div style="font-size:18px;font-weight:800;color:var(--success);" id="settings-aa-yes">0</div>
-                <div style="font-size:10px;color:var(--text-light);font-weight:600;">AA YES</div>
-              </div>
-              <div style="flex:1;min-width:80px;background:var(--white);border-radius:10px;padding:10px;text-align:center;">
-                <div style="font-size:18px;font-weight:800;color:var(--danger);" id="settings-aa-no">0</div>
-                <div style="font-size:10px;color:var(--text-light);font-weight:600;">AA NO</div>
-              </div>
-              <div style="flex:1;min-width:80px;background:var(--white);border-radius:10px;padding:10px;text-align:center;">
-                <div style="font-size:18px;font-weight:800;color:#15803d;" id="settings-padlock">0</div>
-                <div style="font-size:10px;color:var(--text-light);font-weight:600;">Padlock YES</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Export Features -->
-      <div class="settings-section">
-        <div class="settings-section-title">Export &amp; Share</div>
-        <div class="settings-card">
-          <div class="settings-row" onclick="exportJSON()">
-            <div class="settings-icon si-blue">💾</div>
-            <div class="settings-row-text">
-              <div class="settings-row-title">Export Backup (JSON)</div>
-              <div class="settings-row-sub">Download full database as JSON file</div>
-            </div>
-            <span class="settings-row-arrow">›</span>
-          </div>
-          <div class="settings-row" onclick="generatePDF()">
-            <div class="settings-icon si-red">📄</div>
-            <div class="settings-row-text">
-              <div class="settings-row-title">Generate PDF Report</div>
-              <div class="settings-row-sub">Full site report as downloadable PDF</div>
-            </div>
-            <span class="settings-row-arrow">›</span>
-          </div>
-          <div class="settings-row" onclick="sharePrintSummary()">
-            <div class="settings-icon si-cyan">🖨️</div>
-            <div class="settings-row-text">
-              <div class="settings-row-title">Print Site Summary</div>
-              <div class="settings-row-sub">Print-friendly summary page</div>
-            </div>
-            <span class="settings-row-arrow">›</span>
-          </div>
-          <div class="settings-row" onclick="shareWhatsApp()">
-            <div class="settings-icon si-green">💬</div>
-            <div class="settings-row-text">
-              <div class="settings-row-title">Share via WhatsApp</div>
-              <div class="settings-row-sub">Send site summary as WhatsApp message</div>
-            </div>
-            <span class="settings-row-arrow">›</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Import & Restore -->
-      <div class="settings-section">
-        <div class="settings-section-title">Import &amp; Restore</div>
-        <div class="settings-card">
-          <div class="settings-row" onclick="document.getElementById('import-file').click()">
-            <div class="settings-icon si-purple">📥</div>
-            <div class="settings-row-text">
-              <div class="settings-row-title">Import Backup (JSON)</div>
-              <div class="settings-row-sub">Restore from a JSON backup file</div>
-            </div>
-            <span class="settings-row-arrow">›</span>
-          </div>
-        </div>
-        <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importJSON(event)"/>
-      </div>
-
-      <!-- Danger Zone -->
-      <div class="settings-section">
-        <div class="settings-section-title">Danger Zone</div>
-        <div class="settings-card">
-          <div class="settings-row" onclick="confirmClearData()">
-            <div class="settings-icon si-red">🗑️</div>
-            <div class="settings-row-text">
-              <div class="settings-row-title">Clear All Data</div>
-              <div class="settings-row-sub">Remove all sites from database</div>
-            </div>
-            <span class="settings-row-arrow">›</span>
-          </div>
-          <div class="settings-row" onclick="confirmResetDB()">
-            <div class="settings-icon si-red">⚠️</div>
-            <div class="settings-row-text">
-              <div class="settings-row-title">Reset IndexedDB Database</div>
-              <div class="settings-row-sub">Delete and recreate the entire database</div>
-            </div>
-            <span class="settings-row-arrow">›</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- App Info -->
-      <div class="settings-section">
-        <div class="settings-section-title">About</div>
-        <div class="settings-card">
-          <div style="padding:16px;text-align:center;">
-            <div style="font-size:32px;margin-bottom:8px;">📡🔒</div>
-            <div style="font-size:14px;font-weight:800;color:var(--navy);">AA &amp; PADLOCK INFO</div>
-            <div style="font-size:12px;color:var(--text-light);margin-top:4px;">Telecom Site Management PWA v2.0</div>
-            <div style="font-size:11px;color:var(--text-light);margin-top:4px;">Offline-first • IndexedDB • Installable</div>
-          </div>
-        </div>
-      </div>
-      <div style="height:20px;"></div>
-    </div>
-  </div>
-
-  <!-- AA CERTIFICATE PAGE -->
-  <div class="page" id="page-aacert">
-    <div class="cert-hero">
-      <div class="cert-hero-row">
-        <div class="cert-hero-icon">📜</div>
-        <div class="cert-hero-text">
-          <div class="cert-hero-title">AA Certificate Registry</div>
-          <div class="cert-hero-sub">Sites received from HQ — Quick find &amp; track</div>
-        </div>
-        <button style="background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.3);color:#fff;border-radius:10px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;" onclick="openCertModal()">+ ADD</button>
-      </div>
-      <div class="cert-stats-row">
-        <div class="cert-stat"><div class="cert-stat-num" id="cert-stat-total">0</div><div class="cert-stat-label">Total<br/>Sites</div></div>
-        <div class="cert-stat" style="background:rgba(22,163,74,0.25);border-color:rgba(22,163,74,0.35);"><div class="cert-stat-num" id="cert-stat-received">0</div><div class="cert-stat-label">Cert<br/>Received</div></div>
-        <div class="cert-stat" style="background:rgba(245,166,35,0.25);border-color:rgba(245,166,35,0.35);"><div class="cert-stat-num" id="cert-stat-pending">0</div><div class="cert-stat-label">Cert<br/>Pending</div></div>
-        <div class="cert-stat" style="background:rgba(220,38,38,0.25);border-color:rgba(220,38,38,0.35);"><div class="cert-stat-num" id="cert-stat-missing">0</div><div class="cert-stat-label">Cert<br/>Missing</div></div>
-      </div>
-    </div>
-    <div class="cert-search-bar">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input class="search-input" id="cert-search" type="text" placeholder="Search Site ID, HQ ref, remarks…" autocomplete="off"/>
-        <button class="search-clear" id="cert-search-clear" onclick="clearCertSearch()">✕</button>
-      </div>
-    </div>
-    <div class="cert-filters">
-      <div class="filter-chip active" data-filter="all" onclick="setCertFilter(this)">All</div>
-      <div class="filter-chip" data-filter="received" onclick="setCertFilter(this)">✅ Received</div>
-      <div class="filter-chip" data-filter="pending" onclick="setCertFilter(this)">⏳ Pending</div>
-      <div class="filter-chip" data-filter="missing" onclick="setCertFilter(this)">❌ Missing</div>
-      <div class="filter-chip" data-filter="recent" onclick="setCertFilter(this)">🕐 Recent</div>
-    </div>
-    <div style="padding:8px 16px 0;font-size:12px;color:var(--text-light);font-weight:600;" id="cert-count-label"></div>
-    <div class="scroll-area" style="padding-top:6px;">
-      <div id="cert-list-container"><div class="empty-state"><div class="empty-icon">📜</div><div class="empty-title">No AA Certificates yet</div><div class="empty-sub">Tap <strong>+ ADD</strong> to register a site certificate from HQ</div></div></div>
-      <div style="height:80px;"></div>
-    </div>
-    <button class="cert-fab" onclick="openCertModal()">＋</button>
-  </div>
-
-  <!-- ═══════════════════ BOTTOM NAV ═══════════════════ -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-dashboard" onclick="showPage('dashboard')">
-      <span class="nav-icon">🏠</span>
-      <span class="nav-label">Dashboard</span>
-    </button>
-    <button class="nav-btn" id="nav-sites" onclick="showPage('sites')">
-      <span class="nav-icon">📋</span>
-      <span class="nav-label">Sites <span class="count-badge" id="nav-count" style="display:none;"></span></span>
-    </button>
-    <button class="nav-btn" id="nav-aacert" onclick="showPage('aacert')">
-      <span class="nav-icon">📜</span>
-      <span class="nav-label">AA Cert <span class="count-badge" id="cert-nav-count" style="display:none;"></span></span>
-    </button>
-    <button class="nav-btn" id="nav-settings" onclick="showPage('settings')">
-      <span class="nav-icon">⚙️</span>
-      <span class="nav-label">Settings</span>
-    </button>
-  </nav>
+<div class="cards">
+<div class="card">
+<div>Total Sites</div>
+<h2 id="totalSites">0</h2>
 </div>
 
-<!-- ═══════════════════ ADD/EDIT MODAL ═══════════════════ -->
-<div class="modal-overlay" id="modal-add">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-header">
-      <span class="modal-title" id="modal-add-title">Add New Site</span>
-      <button class="modal-close" onclick="closeAddModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="edit-site-id-hidden"/>
-
-      <div class="form-group">
-        <label class="form-label">Site ID *</label>
-        <input class="form-input" id="form-site-id" type="text" placeholder="e.g. SITE-001 or TXC-4521" autocomplete="off" style="font-family:'JetBrains Mono',monospace;font-weight:600;"/>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">AA Status</label>
-        <div class="toggle-group">
-          <button class="toggle-opt" id="aa-yes-btn" onclick="setAA('yes')">✅ YES</button>
-          <button class="toggle-opt" id="aa-no-btn" onclick="setAA('no')">❌ NO</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">AA Notes</label>
-        <textarea class="form-textarea" id="form-aa-notes" placeholder="Add notes about AA status…"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Padlock Status</label>
-        <div class="toggle-group">
-          <button class="toggle-opt" id="pl-yes-btn" onclick="setPadlock('yes')">🔒 YES</button>
-          <button class="toggle-opt" id="pl-no-btn" onclick="setPadlock('no')">🔓 NO</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Padlock Notes</label>
-        <textarea class="form-textarea" id="form-pl-notes" placeholder="Add notes about Padlock status…"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Location / Address</label>
-        <input class="form-input" id="form-location" type="text" placeholder="Optional location info"/>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
-      <button class="btn btn-primary" id="modal-save-btn" onclick="saveSite()">💾 Save Site</button>
-    </div>
-  </div>
+<div class="card">
+<div>AA YES</div>
+<h2 id="aaYes">0</h2>
 </div>
 
-<!-- ═══════════════════ DETAIL MODAL ═══════════════════ -->
-<div class="modal-overlay" id="modal-detail">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-header">
-      <span class="modal-title" id="detail-site-title">Site Details</span>
-      <button class="modal-close" onclick="closeDetailModal()">✕</button>
-    </div>
-    <div class="modal-body" id="detail-body">
-    </div>
-    <div class="modal-footer" style="flex-wrap:wrap;gap:8px;">
-      <button class="btn btn-secondary" style="flex:none;padding:12px 16px;" onclick="editFromDetail()">✏️ Edit</button>
-      <button class="btn btn-danger" style="flex:none;padding:12px 16px;" onclick="deleteFromDetail()">🗑️ Delete</button>
-      <button class="btn btn-gold" style="flex:1;padding:12px 16px;" onclick="shareDetailWhatsApp()">💬 Share</button>
-    </div>
-  </div>
+<div class="card">
+<div>AA NO</div>
+<h2 id="aaNo">0</h2>
+</div>
 </div>
 
-<!-- ═══════════════════ AA CERT ADD/EDIT MODAL ═══════════════════ -->
-<div class="modal-overlay" id="modal-cert">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-header">
-      <span class="modal-title" id="modal-cert-title">Add AA Certificate</span>
-      <button class="modal-close" onclick="closeCertModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="edit-cert-id-hidden"/>
-
-      <div class="form-group">
-        <label class="form-label">Site ID *</label>
-        <input class="form-input" id="cert-form-siteid" type="text" placeholder="e.g. SITE-001 or TXC-4521" autocomplete="off" style="font-family:'JetBrains Mono',monospace;font-weight:600;"/>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Certificate Status *</label>
-        <div class="status-selector">
-          <button class="status-opt" id="cst-received" onclick="setCertStatus('received')">✅<br/>Received</button>
-          <button class="status-opt" id="cst-pending" onclick="setCertStatus('pending')">⏳<br/>Pending</button>
-          <button class="status-opt" id="cst-missing" onclick="setCertStatus('missing')">❌<br/>Missing</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">HQ Reference No.</label>
-        <input class="form-input" id="cert-form-hqref" type="text" placeholder="e.g. HQ/AA/2024/0042"/>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Date Received from HQ</label>
-        <input class="form-input" id="cert-form-daterecv" type="date"/>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Certificate Expiry Date</label>
-        <input class="form-input" id="cert-form-expiry" type="date"/>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Issued By (HQ Contact)</label>
-        <input class="form-input" id="cert-form-issuedby" type="text" placeholder="e.g. Eng. Ahmad / HQ Operations"/>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Remarks / Notes</label>
-        <textarea class="form-textarea" id="cert-form-remarks" placeholder="Any notes about this AA certificate…"></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeCertModal()">Cancel</button>
-      <button class="btn btn-primary" id="cert-save-btn" style="background:linear-gradient(135deg,#1a3a6b,#1a5c3a);" onclick="saveCert()">💾 Save</button>
-    </div>
-  </div>
+<div class="search-box">
+<input type="text" id="searchInput" placeholder="Search Site ID">
 </div>
 
-<!-- ═══════════════════ AA CERT DETAIL MODAL ═══════════════════ -->
-<div class="modal-overlay" id="modal-cert-detail">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-header">
-      <span class="modal-title" id="cert-detail-title">Certificate Detail</span>
-      <button class="modal-close" onclick="closeCertDetailModal()">✕</button>
-    </div>
-    <div class="modal-body" id="cert-detail-body"></div>
-    <div class="modal-footer" style="flex-wrap:wrap;gap:8px;">
-      <button class="btn btn-secondary" style="flex:none;padding:12px 16px;" onclick="editCertFromDetail()">✏️ Edit</button>
-      <button class="btn btn-danger" style="flex:none;padding:12px 16px;" onclick="deleteCertFromDetail()">🗑️ Delete</button>
-      <button class="btn btn-gold" style="flex:1;" onclick="shareCertWhatsApp()">💬 Share</button>
-    </div>
-  </div>
+<div class="filters">
+<button class="filterBtn active" data-filter="all">All</button>
+<button class="filterBtn" data-filter="Yes">AA YES</button>
+<button class="filterBtn" data-filter="No">AA NO</button>
 </div>
 
-<!-- ═══════════════════ CONFIRM MODAL ═══════════════════ -->
-<div class="confirm-overlay" id="confirm-overlay">
-  <div class="confirm-box">
-    <div class="confirm-icon" id="confirm-icon">⚠️</div>
-    <div class="confirm-title" id="confirm-title">Are you sure?</div>
-    <div class="confirm-msg" id="confirm-msg">This action cannot be undone.</div>
-    <div class="confirm-btns">
-      <button class="btn btn-secondary" style="flex:1;" onclick="closeConfirm()">Cancel</button>
-      <button class="btn btn-danger" style="flex:1;" id="confirm-ok-btn" onclick="runConfirmAction()">Confirm</button>
-    </div>
-  </div>
+<div class="site-list" id="dashboardList"></div>
+
+<div class="latest">
+<h3>Latest Updated Sites</h3>
+<div class="site-list" id="latestList"></div>
 </div>
 
-<!-- ═══════════════════ TOAST ═══════════════════ -->
-<div class="toast" id="toast"></div>
+</div>
 
-<!-- ═══════════════════ PRINT AREA ═══════════════════ -->
-<div id="print-area"></div>
+<!-- SITE MANAGEMENT -->
+<div class="container page" id="sitePage">
+
+<h2>Site Management</h2>
+
+<input type="text" id="siteId" placeholder="Site ID">
+
+<select id="aaStatus">
+<option value="Yes">AA YES</option>
+<option value="No">AA NO</option>
+</select>
+
+<textarea id="siteNotes" rows="4" placeholder="Notes"></textarea>
+
+<button class="settings-btn" onclick="saveSite()">Save Site</button>
+
+</div>
+
+<!-- CERTIFICATE -->
+<div class="container page" id="certificatePage">
+
+<h2>AA Certificate Record</h2>
+
+<div id="certificateList"></div>
+
+</div>
+
+<!-- SETTINGS -->
+<div class="container page" id="settingsPage">
+
+<h2>Settings & Backup</h2>
+
+<button class="settings-btn" onclick="exportJSON()">Export JSON Backup</button>
+
+<input type="file" id="importFile">
+
+<button class="settings-btn" onclick="importJSON()">Import JSON Backup</button>
+
+<button class="settings-btn" onclick="printSummary()">Print Summary</button>
+
+<button class="settings-btn" onclick="clearAllData()">Clear All Data</button>
+
+<button class="settings-btn" onclick="resetDB()">Reset IndexedDB Database</button>
+
+</div>
+
+<button class="fab" onclick="openPage('sitePage')">
+<i class="fa fa-plus"></i>
+</button>
+
+<div class="bottom-nav">
+<button class="active" onclick="switchTab(this,'dashboardPage')">
+<i class="fa fa-home"></i>
+Dashboard
+</button>
+
+<button onclick="switchTab(this,'sitePage')">
+<i class="fa fa-building"></i>
+Sites
+</button>
+
+<button onclick="switchTab(this,'certificatePage')">
+<i class="fa fa-file"></i>
+Certificate
+</button>
+
+<button onclick="switchTab(this,'settingsPage')">
+<i class="fa fa-gear"></i>
+Settings
+</button>
+</div>
 
 <script>
-'use strict';
+let db;
 
-// ═══════════════════════════════════════════════
-//  INDEXEDDB SETUP
-// ═══════════════════════════════════════════════
-const DB_NAME = 'AAPadlockDB';
-const DB_VERSION = 2;
-const STORE_NAME = 'sites';
-const CERT_STORE = 'aacerts';
-let db = null;
+const request = indexedDB.open("AAINFO_DB",1);
 
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = e => {
-      const d = e.target.result;
-      if (!d.objectStoreNames.contains(STORE_NAME)) {
-        const store = d.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-        store.createIndex('siteId', 'siteId', { unique: true });
-        store.createIndex('updatedAt', 'updatedAt', { unique: false });
-      }
-      if (!d.objectStoreNames.contains(CERT_STORE)) {
-        const cs = d.createObjectStore(CERT_STORE, { keyPath: 'id', autoIncrement: true });
-        cs.createIndex('siteId', 'siteId', { unique: false });
-        cs.createIndex('certStatus', 'certStatus', { unique: false });
-        cs.createIndex('updatedAt', 'updatedAt', { unique: false });
-      }
-    };
-    req.onsuccess = e => { db = e.target.result; resolve(db); };
-    req.onerror = e => reject(e.target.error);
-  });
+request.onupgradeneeded = function(e){
+db = e.target.result;
+
+if(!db.objectStoreNames.contains("sites")){
+db.createObjectStore("sites",{keyPath:"siteId"});
+}
+};
+
+request.onsuccess = function(e){
+db = e.target.result;
+loadSites();
+};
+
+function saveSite(){
+
+const siteId = document.getElementById("siteId").value.trim();
+const aaStatus = document.getElementById("aaStatus").value;
+const notes = document.getElementById("siteNotes").value;
+
+if(!siteId){
+alert("Enter Site ID");
+return;
 }
 
-// ── Sites store ──
-function dbGetAll() {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const req = tx.objectStore(STORE_NAME).getAll();
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-function dbPut(site) {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const req = tx.objectStore(STORE_NAME).put(site);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-function dbDelete(id) {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const req = tx.objectStore(STORE_NAME).delete(id);
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
-  });
-}
-function dbClear() {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const req = tx.objectStore(STORE_NAME).clear();
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
-  });
-}
-function dbGetBySiteId(siteId) {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const req = tx.objectStore(STORE_NAME).index('siteId').get(siteId);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
+const tx = db.transaction("sites","readwrite");
+const store = tx.objectStore("sites");
 
-// ── Certs store ──
-function certGetAll() {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(CERT_STORE, 'readonly');
-    const req = tx.objectStore(CERT_STORE).getAll();
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-function certPut(cert) {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(CERT_STORE, 'readwrite');
-    const req = tx.objectStore(CERT_STORE).put(cert);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-function certDelete(id) {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(CERT_STORE, 'readwrite');
-    const req = tx.objectStore(CERT_STORE).delete(id);
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
-  });
-}
-
-// ═══════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════
-let allSites = [];
-let allCerts = [];
-let dashFilter = 'all';
-let sitesFilter = 'all';
-let certFilter = 'all';
-let dashSearch = '';
-let sitesSearch = '';
-let certSearch = '';
-let currentDetailId = null;
-let currentCertDetailId = null;
-let formAA = null;
-let formPadlock = null;
-let formCertStatus = null;
-let confirmAction = null;
-
-// ═══════════════════════════════════════════════
-//  NAVIGATION
-// ═══════════════════════════════════════════════
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
-  if (name === 'sites') renderSitesList();
-  if (name === 'settings') updateSettingsStats();
-  if (name === 'aacert') renderCertList();
-}
-
-// ═══════════════════════════════════════════════
-//  LOAD ALL
-// ═══════════════════════════════════════════════
-async function loadAll() {
-  allSites = await dbGetAll();
-  allSites.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-  allCerts = await certGetAll();
-  allCerts.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-  renderDashboard();
-  renderSitesList();
-  renderCertList();
-  updateSettingsStats();
-  updateNavCount();
-  updateCertNavCount();
-}
-
-function updateNavCount() {
-  const el = document.getElementById('nav-count');
-  if (allSites.length > 0) {
-    el.textContent = allSites.length;
-    el.style.display = '';
-  } else {
-    el.style.display = 'none';
-  }
-}
-function updateCertNavCount() {
-  const el = document.getElementById('cert-nav-count');
-  if (allCerts.length > 0) {
-    el.textContent = allCerts.length;
-    el.style.display = '';
-  } else {
-    el.style.display = 'none';
-  }
-}
-
-// ═══════════════════════════════════════════════
-//  DASHBOARD
-// ═══════════════════════════════════════════════
-function renderDashboard() {
-  const aaYes = allSites.filter(s => s.aa === 'yes').length;
-  const aaNO  = allSites.filter(s => s.aa === 'no').length;
-  const plYes = allSites.filter(s => s.padlock === 'yes').length;
-  document.getElementById('stat-aa-yes').textContent   = aaYes;
-  document.getElementById('stat-aa-no').textContent    = aaNO;
-  document.getElementById('stat-padlock').textContent  = plYes;
-  document.getElementById('dash-total-badge').textContent = allSites.length + ' Site' + (allSites.length !== 1 ? 's' : '');
-
-  let filtered = filterSites(allSites, dashFilter, dashSearch);
-  const container = document.getElementById('dash-cards-container');
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">' + (dashSearch ? '🔍' : '📡') + '</div><div class="empty-title">' + (dashSearch ? 'No results found' : 'No sites yet') + '</div><div class="empty-sub">' + (dashSearch ? 'Try a different search term' : 'Tap the <strong>+</strong> button to add your first site') + '</div></div>';
-    return;
-  }
-  container.innerHTML = filtered.slice(0, 50).map(s => buildDashCard(s, dashSearch)).join('');
-}
-
-function buildDashCard(s, highlight) {
-  const accent   = s.aa === 'yes' && s.padlock === 'yes' ? 'accent-yes' : s.aa === 'no' && s.padlock === 'no' ? 'accent-no' : 'accent-mix';
-  const aaClass  = s.aa === 'yes' ? 'badge-yes' : 'badge-no';
-  const aaIcon   = s.aa === 'yes' ? '✅' : '❌';
-  const plClass  = s.padlock === 'yes' ? 'badge-padlock-yes' : 'badge-padlock-no';
-  const plIcon   = s.padlock === 'yes' ? '🔒' : '🔓';
-  const date     = s.updatedAt ? new Date(s.updatedAt).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
-  const notePreview = s.aaNotes || s.padlockNotes || '';
-  const idDisplay   = highlight ? highlightText(s.siteId, highlight) : escHtml(s.siteId);
-  return '<div class="site-card" onclick="openDetailModal(' + s.id + ')">' +
-    '<div class="site-card-accent ' + accent + '"></div>' +
-    '<div style="padding-left:6px;">' +
-      '<div class="site-card-header"><div class="site-id">' + idDisplay + '</div><span class="site-date">' + date + '</span></div>' +
-      (s.location ? '<div style="font-size:11px;color:var(--text-light);margin-top:3px;">📍 ' + escHtml(s.location) + '</div>' : '') +
-      '<div class="site-badges"><span class="badge ' + aaClass + '">' + aaIcon + ' AA: ' + s.aa.toUpperCase() + '</span><span class="badge ' + plClass + '">' + plIcon + ' Padlock: ' + s.padlock.toUpperCase() + '</span></div>' +
-      (notePreview ? '<div class="site-note-preview">' + escHtml(notePreview) + '</div>' : '') +
-    '</div></div>';
-}
-
-// ═══════════════════════════════════════════════
-//  SITES LIST
-// ═══════════════════════════════════════════════
-function renderSitesList() {
-  let filtered = filterSites(allSites, sitesFilter, sitesSearch);
-  document.getElementById('sites-count-label').textContent = filtered.length + ' of ' + allSites.length + ' sites';
-  const container = document.getElementById('sites-list-container');
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">' + (sitesSearch ? '🔍' : '📋') + '</div><div class="empty-title">' + (sitesSearch ? 'No results' : 'No sites') + '</div><div class="empty-sub">' + (sitesSearch ? 'Try a different search' : 'Add sites using the + button') + '</div></div>';
-    return;
-  }
-  container.innerHTML = filtered.map(s => buildSiteRow(s, sitesSearch)).join('');
-}
-
-function buildSiteRow(s, highlight) {
-  const aaClass = s.aa === 'yes' ? 'badge-yes' : 'badge-no';
-  const aaIcon  = s.aa === 'yes' ? '✅' : '❌';
-  const plClass = s.padlock === 'yes' ? 'badge-padlock-yes' : 'badge-padlock-no';
-  const plIcon  = s.padlock === 'yes' ? '🔒' : '🔓';
-  const idDisplay = highlight ? highlightText(s.siteId, highlight) : escHtml(s.siteId);
-  const note = (s.aaNotes || s.padlockNotes || '').substring(0, 80);
-  return '<div class="site-row" onclick="openDetailModal(' + s.id + ')">' +
-    '<div class="site-row-main"><div class="site-row-id">' + idDisplay + '</div>' +
-    '<div class="site-row-badges"><span class="badge ' + aaClass + '" style="font-size:10px;padding:3px 7px;">' + aaIcon + '</span><span class="badge ' + plClass + '" style="font-size:10px;padding:3px 7px;">' + plIcon + '</span></div>' +
-    '<span class="site-row-arrow">›</span></div>' +
-    (note ? '<div style="padding:0 14px 10px;font-size:11px;color:var(--text-light);line-height:1.4;">' + escHtml(note) + ((s.aaNotes || s.padlockNotes || '').length > 80 ? '…' : '') + '</div>' : '') +
-    '</div>';
-}
-
-function filterSites(sites, filter, search) {
-  let result = sites;
-  if (filter === 'aa-yes')      result = result.filter(s => s.aa === 'yes');
-  else if (filter === 'aa-no')  result = result.filter(s => s.aa === 'no');
-  else if (filter === 'padlock-yes') result = result.filter(s => s.padlock === 'yes');
-  else if (filter === 'padlock-no')  result = result.filter(s => s.padlock === 'no');
-  else if (filter === 'both-yes')    result = result.filter(s => s.aa === 'yes' && s.padlock === 'yes');
-  else if (filter === 'recent')      result = result.slice(0, 10);
-  if (search) {
-    const q = search.toLowerCase();
-    result = result.filter(s =>
-      s.siteId.toLowerCase().includes(q) ||
-      (s.aaNotes || '').toLowerCase().includes(q) ||
-      (s.padlockNotes || '').toLowerCase().includes(q) ||
-      (s.location || '').toLowerCase().includes(q)
-    );
-  }
-  return result;
-}
-
-function updateSettingsStats() {
-  document.getElementById('settings-total').textContent   = allSites.length;
-  document.getElementById('settings-aa-yes').textContent  = allSites.filter(s => s.aa === 'yes').length;
-  document.getElementById('settings-aa-no').textContent   = allSites.filter(s => s.aa === 'no').length;
-  document.getElementById('settings-padlock').textContent = allSites.filter(s => s.padlock === 'yes').length;
-}
-
-// ═══════════════════════════════════════════════
-//  FILTERS & SEARCH — DASHBOARD
-// ═══════════════════════════════════════════════
-function setDashFilter(el) {
-  document.querySelectorAll('#page-dashboard .filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  dashFilter = el.dataset.filter;
-  renderDashboard();
-}
-function setSitesFilter(el) {
-  document.querySelectorAll('#page-sites .filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  sitesFilter = el.dataset.filter;
-  renderSitesList();
-}
-document.getElementById('dash-search').addEventListener('input', function() {
-  dashSearch = this.value.trim();
-  document.getElementById('dash-search-clear').classList.toggle('show', dashSearch.length > 0);
-  renderDashboard();
+store.put({
+siteId,
+aaStatus,
+notes,
+updated:new Date().toISOString(),
+certificate:"No"
 });
-document.getElementById('sites-search').addEventListener('input', function() {
-  sitesSearch = this.value.trim();
-  document.getElementById('sites-search-clear').classList.toggle('show', sitesSearch.length > 0);
-  renderSitesList();
+
+tx.oncomplete = ()=>{
+alert("Site Saved");
+document.getElementById("siteId").value="";
+document.getElementById("siteNotes").value="";
+loadSites();
+};
+}
+
+function loadSites(){
+
+const tx = db.transaction("sites","readonly");
+const store = tx.objectStore("sites");
+const req = store.getAll();
+
+req.onsuccess = ()=>{
+
+const data = req.result;
+
+document.getElementById("totalSites").innerText = data.length;
+
+document.getElementById("aaYes").innerText =
+data.filter(x=>x.aaStatus==="Yes").length;
+
+document.getElementById("aaNo").innerText =
+data.filter(x=>x.aaStatus==="No").length;
+
+renderDashboard(data);
+renderLatest(data);
+renderCertificate(data);
+};
+}
+
+function renderDashboard(data){
+
+const list = document.getElementById("dashboardList");
+list.innerHTML="";
+
+data.forEach(site=>{
+
+const div = document.createElement("div");
+div.className="site-card";
+
+div.innerHTML=`
+<h3>${site.siteId}</h3>
+<p>AA Status: ${site.aaStatus}</p>
+<p>${site.notes || ""}</p>
+
+<button class="settings-btn" onclick="generatePDF('${site.siteId}')">
+Generate PDF
+</button>
+
+<button class="settings-btn" onclick="shareWhatsApp('${site.siteId}')">
+WhatsApp Share
+</button>
+`;
+
+list.appendChild(div);
+
 });
-function clearDashSearch() {
-  document.getElementById('dash-search').value = '';
-  dashSearch = '';
-  document.getElementById('dash-search-clear').classList.remove('show');
-  renderDashboard();
-}
-function clearSitesSearch() {
-  document.getElementById('sites-search').value = '';
-  sitesSearch = '';
-  document.getElementById('sites-search-clear').classList.remove('show');
-  renderSitesList();
 }
 
-// ═══════════════════════════════════════════════
-//  ADD / EDIT SITE MODAL
-// ═══════════════════════════════════════════════
-function openAddModal() {
-  document.getElementById('modal-add-title').textContent = 'Add New Site';
-  document.getElementById('modal-save-btn').textContent = '💾 Save Site';
-  document.getElementById('edit-site-id-hidden').value = '';
-  document.getElementById('form-site-id').value = '';
-  document.getElementById('form-aa-notes').value = '';
-  document.getElementById('form-pl-notes').value = '';
-  document.getElementById('form-location').value = '';
-  formAA = null; formPadlock = null;
-  clearToggle('aa'); clearToggle('padlock');
-  document.getElementById('modal-add').classList.add('open');
-}
-function openEditModal(site) {
-  document.getElementById('modal-add-title').textContent = 'Edit Site';
-  document.getElementById('modal-save-btn').textContent = '✏️ Update Site';
-  document.getElementById('edit-site-id-hidden').value = site.id;
-  document.getElementById('form-site-id').value = site.siteId;
-  document.getElementById('form-aa-notes').value = site.aaNotes || '';
-  document.getElementById('form-pl-notes').value = site.padlockNotes || '';
-  document.getElementById('form-location').value = site.location || '';
-  formAA = site.aa; formPadlock = site.padlock;
-  clearToggle('aa'); clearToggle('padlock');
-  if (site.aa === 'yes')      document.getElementById('aa-yes-btn').classList.add('active-yes');
-  if (site.aa === 'no')       document.getElementById('aa-no-btn').classList.add('active-no');
-  if (site.padlock === 'yes') document.getElementById('pl-yes-btn').classList.add('active-yes');
-  if (site.padlock === 'no')  document.getElementById('pl-no-btn').classList.add('active-no');
-  document.getElementById('modal-add').classList.add('open');
-}
-function closeAddModal() { document.getElementById('modal-add').classList.remove('open'); }
+function renderLatest(data){
 
-function clearToggle(type) {
-  if (type === 'aa') {
-    document.getElementById('aa-yes-btn').classList.remove('active-yes','active-no');
-    document.getElementById('aa-no-btn').classList.remove('active-yes','active-no');
-  } else {
-    document.getElementById('pl-yes-btn').classList.remove('active-yes','active-no');
-    document.getElementById('pl-no-btn').classList.remove('active-yes','active-no');
-  }
-}
-function setAA(val) {
-  formAA = val; clearToggle('aa');
-  document.getElementById(val === 'yes' ? 'aa-yes-btn' : 'aa-no-btn').classList.add(val === 'yes' ? 'active-yes' : 'active-no');
-}
-function setPadlock(val) {
-  formPadlock = val; clearToggle('padlock');
-  document.getElementById(val === 'yes' ? 'pl-yes-btn' : 'pl-no-btn').classList.add(val === 'yes' ? 'active-yes' : 'active-no');
-}
+const latest = [...data]
+.sort((a,b)=>new Date(b.updated)-new Date(a.updated))
+.slice(0,5);
 
-async function saveSite() {
-  const siteId = document.getElementById('form-site-id').value.trim().toUpperCase();
-  if (!siteId)      { showToast('⚠️ Site ID is required'); return; }
-  if (!formAA)      { showToast('⚠️ Select AA status'); return; }
-  if (!formPadlock) { showToast('⚠️ Select Padlock status'); return; }
-  const editId = document.getElementById('edit-site-id-hidden').value;
-  const now = new Date().toISOString();
-  const site = {
-    siteId,
-    aa: formAA, padlock: formPadlock,
-    aaNotes:      document.getElementById('form-aa-notes').value.trim(),
-    padlockNotes: document.getElementById('form-pl-notes').value.trim(),
-    location:     document.getElementById('form-location').value.trim(),
-    updatedAt: now
-  };
-  if (editId) {
-    site.id = parseInt(editId);
-    const ex = allSites.find(s => s.id === site.id);
-    site.createdAt = ex ? ex.createdAt : now;
-  } else {
-    try { const ex = await dbGetBySiteId(siteId); if (ex) { showToast('⚠️ Site ID already exists'); return; } } catch(e) {}
-    site.createdAt = now;
-  }
-  const btn = document.getElementById('modal-save-btn');
-  btn.innerHTML = '<span class="loading-spinner"></span>'; btn.disabled = true;
-  try {
-    await dbPut(site); closeAddModal(); await loadAll();
-    showToast(editId ? '✅ Site updated!' : '✅ Site added!');
-  } catch(e) { showToast('❌ Error: ' + e.message); }
-  finally { btn.innerHTML = editId ? '✏️ Update Site' : '💾 Save Site'; btn.disabled = false; }
-}
+const list = document.getElementById("latestList");
+list.innerHTML="";
 
-// ═══════════════════════════════════════════════
-//  SITE DETAIL MODAL
-// ═══════════════════════════════════════════════
-function openDetailModal(id) {
-  const site = allSites.find(s => s.id === id);
-  if (!site) return;
-  currentDetailId = id;
-  document.getElementById('detail-site-title').textContent = site.siteId;
-  const aaClass = site.aa === 'yes' ? 'badge-yes' : 'badge-no';
-  const aaIcon  = site.aa === 'yes' ? '✅' : '❌';
-  const plClass = site.padlock === 'yes' ? 'badge-padlock-yes' : 'badge-padlock-no';
-  const plIcon  = site.padlock === 'yes' ? '🔒' : '🔓';
-  const created = site.createdAt ? new Date(site.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'N/A';
-  const updated = site.updatedAt ? new Date(site.updatedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'N/A';
-  document.getElementById('detail-body').innerHTML =
-    '<div class="detail-section"><div class="detail-label">Site ID</div>' +
-    '<div style="font-family:JetBrains Mono,monospace;font-size:20px;font-weight:700;color:var(--navy);">' + escHtml(site.siteId) + '</div>' +
-    (site.location ? '<div style="font-size:12px;color:var(--text-light);margin-top:4px;">📍 ' + escHtml(site.location) + '</div>' : '') + '</div>' +
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">' +
-      '<div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;text-align:center;"><div style="font-size:11px;font-weight:700;color:var(--text-light);margin-bottom:6px;">AA STATUS</div><span class="badge detail-badge-lg ' + aaClass + '">' + aaIcon + ' ' + site.aa.toUpperCase() + '</span></div>' +
-      '<div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;text-align:center;"><div style="font-size:11px;font-weight:700;color:var(--text-light);margin-bottom:6px;">PADLOCK</div><span class="badge detail-badge-lg ' + plClass + '">' + plIcon + ' ' + site.padlock.toUpperCase() + '</span></div>' +
-    '</div>' +
-    (site.aaNotes ? '<div class="detail-section"><div class="detail-label">AA Notes</div><div class="detail-note">' + escHtml(site.aaNotes) + '</div></div>' : '') +
-    (site.padlockNotes ? '<div class="detail-section"><div class="detail-label">Padlock Notes</div><div class="detail-note" style="border-left-color:var(--gold);">' + escHtml(site.padlockNotes) + '</div></div>' : '') +
-    '<div style="display:flex;gap:10px;margin-top:10px;">' +
-      '<div style="flex:1;font-size:11px;color:var(--text-light);"><div style="font-weight:700;margin-bottom:2px;">Created</div><div>' + created + '</div></div>' +
-      '<div style="flex:1;font-size:11px;color:var(--text-light);"><div style="font-weight:700;margin-bottom:2px;">Updated</div><div>' + updated + '</div></div>' +
-    '</div>';
-  document.getElementById('modal-detail').classList.add('open');
-}
-function closeDetailModal() { document.getElementById('modal-detail').classList.remove('open'); currentDetailId = null; }
-function editFromDetail() {
-  const site = allSites.find(s => s.id === currentDetailId);
-  if (!site) return;
-  closeDetailModal(); openEditModal(site);
-}
-function deleteFromDetail() {
-  const site = allSites.find(s => s.id === currentDetailId);
-  if (!site) return;
-  showConfirm('🗑️', 'Delete Site?', '"' + site.siteId + '" will be permanently removed.', async () => {
-    await dbDelete(currentDetailId); closeDetailModal(); await loadAll(); showToast('🗑️ Site deleted');
-  });
-}
-function shareDetailWhatsApp() {
-  const site = allSites.find(s => s.id === currentDetailId);
-  if (!site) return;
-  window.open('https://wa.me/?text=' + encodeURIComponent(buildWhatsAppMsg([site])), '_blank');
-}
+latest.forEach(site=>{
 
-// ═══════════════════════════════════════════════
-//  AA CERT PAGE
-// ═══════════════════════════════════════════════
-function renderCertList() {
-  const received = allCerts.filter(c => c.certStatus === 'received').length;
-  const pending  = allCerts.filter(c => c.certStatus === 'pending').length;
-  const missing  = allCerts.filter(c => c.certStatus === 'missing').length;
-  document.getElementById('cert-stat-total').textContent    = allCerts.length;
-  document.getElementById('cert-stat-received').textContent = received;
-  document.getElementById('cert-stat-pending').textContent  = pending;
-  document.getElementById('cert-stat-missing').textContent  = missing;
-  let filtered = filterCerts(allCerts, certFilter, certSearch);
-  document.getElementById('cert-count-label').textContent = filtered.length + ' of ' + allCerts.length + ' certificates';
-  const container = document.getElementById('cert-list-container');
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">' + (certSearch ? '🔍' : '📜') + '</div><div class="empty-title">' + (certSearch ? 'No results found' : 'No AA Certificates yet') + '</div><div class="empty-sub">' + (certSearch ? 'Try a different search term' : 'Tap <strong>+ ADD</strong> to register a certificate from HQ') + '</div></div>';
-    return;
-  }
-  container.innerHTML = filtered.map(c => buildCertItem(c, certSearch)).join('');
-}
+const div = document.createElement("div");
+div.className="site-card";
 
-function filterCerts(certs, filter, search) {
-  let result = certs;
-  if (filter === 'received')     result = result.filter(c => c.certStatus === 'received');
-  else if (filter === 'pending') result = result.filter(c => c.certStatus === 'pending');
-  else if (filter === 'missing') result = result.filter(c => c.certStatus === 'missing');
-  else if (filter === 'recent')  result = result.slice(0, 15);
-  if (search) {
-    const q = search.toLowerCase();
-    result = result.filter(c =>
-      c.siteId.toLowerCase().includes(q) ||
-      (c.hqRef || '').toLowerCase().includes(q) ||
-      (c.issuedBy || '').toLowerCase().includes(q) ||
-      (c.remarks || '').toLowerCase().includes(q)
-    );
-  }
-  return result;
-}
+div.innerHTML=`
+<h3>${site.siteId}</h3>
+<p>Updated: ${new Date(site.updated).toLocaleString()}</p>
+`;
 
-function buildCertItem(c, highlight) {
-  const statusClass = c.certStatus || 'missing';
-  const badgeClass  = { received: 'cert-status-received', pending: 'cert-status-pending', missing: 'cert-status-missing' }[c.certStatus] || 'cert-status-missing';
-  const statusText  = { received: '✅ Received', pending: '⏳ Pending', missing: '❌ Missing' }[c.certStatus] || c.certStatus;
-  const date = c.updatedAt ? new Date(c.updatedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '';
-  const idDisplay = highlight ? highlightText(c.siteId, highlight) : escHtml(c.siteId);
+list.appendChild(div);
 
-  let expiryTag = '';
-  if (c.expiryDate) {
-    const daysLeft = Math.ceil((new Date(c.expiryDate) - new Date()) / 86400000);
-    if (daysLeft < 0)       expiryTag = '<span style="background:#fee2e2;color:#b91c1c;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px;">EXPIRED</span>';
-    else if (daysLeft <= 30) expiryTag = '<span style="background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px;">Exp ' + daysLeft + 'd</span>';
-    else expiryTag = '<span style="background:#f0fdf4;color:#15803d;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:6px;">' + new Date(c.expiryDate).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) + '</span>';
-  }
-
-  return '<div class="cert-item" onclick="openCertDetailModal(' + c.id + ')">' +
-    '<div class="cert-item-left ' + statusClass + '"></div>' +
-    '<div class="cert-item-body">' +
-      '<div class="cert-item-top"><div class="cert-item-id">' + idDisplay + expiryTag + '</div><span class="cert-item-date">' + date + '</span></div>' +
-      '<div><span class="cert-status-badge ' + badgeClass + '">' + statusText + '</span></div>' +
-      (c.hqRef    ? '<div class="cert-item-from">🗂️ HQ Ref: ' + escHtml(c.hqRef) + '</div>' : '') +
-      (c.issuedBy ? '<div class="cert-item-meta">👤 ' + escHtml(c.issuedBy) + '</div>' : '') +
-      (c.remarks  ? '<div class="cert-item-meta" style="display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;">' + escHtml(c.remarks) + '</div>' : '') +
-    '</div></div>';
-}
-
-function setCertFilter(el) {
-  document.querySelectorAll('.cert-filters .filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  certFilter = el.dataset.filter;
-  renderCertList();
-}
-document.getElementById('cert-search').addEventListener('input', function() {
-  certSearch = this.value.trim();
-  document.getElementById('cert-search-clear').classList.toggle('show', certSearch.length > 0);
-  renderCertList();
 });
-function clearCertSearch() {
-  document.getElementById('cert-search').value = '';
-  certSearch = '';
-  document.getElementById('cert-search-clear').classList.remove('show');
-  renderCertList();
 }
 
-// ── Cert Add Modal ──
-function openCertModal() {
-  document.getElementById('modal-cert-title').textContent = 'Add AA Certificate';
-  document.getElementById('cert-save-btn').textContent = '💾 Save';
-  document.getElementById('edit-cert-id-hidden').value = '';
-  document.getElementById('cert-form-siteid').value = '';
-  document.getElementById('cert-form-hqref').value = '';
-  document.getElementById('cert-form-daterecv').value = '';
-  document.getElementById('cert-form-expiry').value = '';
-  document.getElementById('cert-form-issuedby').value = '';
-  document.getElementById('cert-form-remarks').value = '';
-  formCertStatus = null;
-  document.querySelectorAll('.status-opt').forEach(b => { b.className = 'status-opt'; });
-  document.getElementById('modal-cert').classList.add('open');
-}
-function closeCertModal() { document.getElementById('modal-cert').classList.remove('open'); }
-function setCertStatus(val) {
-  formCertStatus = val;
-  document.querySelectorAll('.status-opt').forEach(b => { b.className = 'status-opt'; });
-  const cls = { received: 'sel-received', pending: 'sel-pending', missing: 'sel-missing' };
-  document.getElementById('cst-' + val).classList.add(cls[val]);
-}
-async function saveCert() {
-  const siteId = document.getElementById('cert-form-siteid').value.trim().toUpperCase();
-  if (!siteId)        { showToast('⚠️ Site ID is required'); return; }
-  if (!formCertStatus){ showToast('⚠️ Select Certificate Status'); return; }
-  const editId = document.getElementById('edit-cert-id-hidden').value;
-  const now = new Date().toISOString();
-  const cert = {
-    siteId,
-    certStatus: formCertStatus,
-    hqRef:      document.getElementById('cert-form-hqref').value.trim(),
-    dateRecv:   document.getElementById('cert-form-daterecv').value,
-    expiryDate: document.getElementById('cert-form-expiry').value,
-    issuedBy:   document.getElementById('cert-form-issuedby').value.trim(),
-    remarks:    document.getElementById('cert-form-remarks').value.trim(),
-    updatedAt:  now
-  };
-  if (editId) {
-    cert.id = parseInt(editId);
-    const ex = allCerts.find(c => c.id === cert.id);
-    cert.createdAt = ex ? ex.createdAt : now;
-  } else { cert.createdAt = now; }
-  const btn = document.getElementById('cert-save-btn');
-  btn.innerHTML = '<span class="loading-spinner"></span>'; btn.disabled = true;
-  try {
-    await certPut(cert); closeCertModal();
-    allCerts = await certGetAll();
-    allCerts.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-    renderCertList(); updateCertNavCount();
-    showToast(editId ? '✅ Certificate updated!' : '✅ Certificate added!');
-  } catch(e) { showToast('❌ Error: ' + e.message); }
-  finally { btn.innerHTML = '💾 Save'; btn.disabled = false; }
+function renderCertificate(data){
+
+const list = document.getElementById("certificateList");
+list.innerHTML="";
+
+data.forEach(site=>{
+
+const div = document.createElement("div");
+div.className="site-card";
+
+div.innerHTML=`
+<h3>${site.siteId}</h3>
+
+<select onchange="updateCertificate('${site.siteId}',this.value)">
+<option value="Yes" ${site.certificate==="Yes"?"selected":""}>YES</option>
+<option value="No" ${site.certificate==="No"?"selected":""}>NO</option>
+</select>
+`;
+
+list.appendChild(div);
+
+});
 }
 
-// ── Cert Detail Modal ──
-function openCertDetailModal(id) {
-  const c = allCerts.find(x => x.id === id);
-  if (!c) return;
-  currentCertDetailId = id;
-  document.getElementById('cert-detail-title').textContent = c.siteId;
-  const badgeClass = { received: 'cert-status-received', pending: 'cert-status-pending', missing: 'cert-status-missing' }[c.certStatus] || 'cert-status-missing';
-  const statusText = { received: '✅ Certificate Received', pending: '⏳ Certificate Pending', missing: '❌ Certificate Missing' }[c.certStatus] || c.certStatus;
-  const created = c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}) : 'N/A';
-  const updated = c.updatedAt ? new Date(c.updatedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}) : 'N/A';
+function updateCertificate(siteId,val){
 
-  let expiryHtml = '';
-  if (c.expiryDate) {
-    const daysLeft = Math.ceil((new Date(c.expiryDate) - new Date()) / 86400000);
-    const expFmt   = new Date(c.expiryDate).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
-    const expColor = daysLeft < 0 ? '#b91c1c' : daysLeft <= 30 ? '#92400e' : '#15803d';
-    const expBg    = daysLeft < 0 ? '#fee2e2' : daysLeft <= 30 ? '#fef3c7' : '#f0fdf4';
-    const expLabel = daysLeft < 0 ? '⚠️ Expired' : daysLeft <= 30 ? '⚠️ Expiring in ' + daysLeft + ' days' : '✅ Valid';
-    expiryHtml = '<div class="detail-section"><div class="detail-label">Expiry Date</div>' +
-      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">' +
-      '<span style="font-size:15px;font-weight:700;color:' + expColor + ';">' + expFmt + '</span>' +
-      '<span style="background:' + expBg + ';color:' + expColor + ';font-size:11px;font-weight:700;padding:3px 12px;border-radius:20px;">' + expLabel + '</span>' +
-      '</div></div>';
-  }
+const tx = db.transaction("sites","readwrite");
+const store = tx.objectStore("sites");
 
-  document.getElementById('cert-detail-body').innerHTML =
-    '<div class="detail-section"><div class="detail-label">Site ID</div>' +
-    '<div style="font-family:JetBrains Mono,monospace;font-size:20px;font-weight:700;color:var(--navy);">' + escHtml(c.siteId) + '</div></div>' +
-    '<div class="detail-section"><div class="detail-label">Certificate Status</div>' +
-    '<span class="cert-status-badge ' + badgeClass + '" style="font-size:14px;padding:8px 18px;">' + statusText + '</span></div>' +
-    (c.hqRef    ? '<div class="detail-section"><div class="detail-label">HQ Reference No.</div><div class="detail-value">🗂️ ' + escHtml(c.hqRef) + '</div></div>' : '') +
-    (c.dateRecv ? '<div class="detail-section"><div class="detail-label">Date Received from HQ</div><div class="detail-value">📅 ' + new Date(c.dateRecv).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}) + '</div></div>' : '') +
-    expiryHtml +
-    (c.issuedBy ? '<div class="detail-section"><div class="detail-label">Issued By</div><div class="detail-value">👤 ' + escHtml(c.issuedBy) + '</div></div>' : '') +
-    (c.remarks  ? '<div class="detail-section"><div class="detail-label">Remarks / Notes</div><div class="detail-note">' + escHtml(c.remarks) + '</div></div>' : '') +
-    '<div style="display:flex;gap:10px;margin-top:12px;">' +
-    '<div style="flex:1;font-size:11px;color:var(--text-light);"><div style="font-weight:700;margin-bottom:2px;">Added</div><div>' + created + '</div></div>' +
-    '<div style="flex:1;font-size:11px;color:var(--text-light);"><div style="font-weight:700;margin-bottom:2px;">Updated</div><div>' + updated + '</div></div>' +
-    '</div>';
-  document.getElementById('modal-cert-detail').classList.add('open');
-}
-function closeCertDetailModal() { document.getElementById('modal-cert-detail').classList.remove('open'); currentCertDetailId = null; }
-function editCertFromDetail() {
-  const c = allCerts.find(x => x.id === currentCertDetailId);
-  if (!c) return;
-  closeCertDetailModal();
-  document.getElementById('modal-cert-title').textContent = 'Edit Certificate';
-  document.getElementById('cert-save-btn').textContent = '✏️ Update';
-  document.getElementById('edit-cert-id-hidden').value = c.id;
-  document.getElementById('cert-form-siteid').value   = c.siteId;
-  document.getElementById('cert-form-hqref').value    = c.hqRef || '';
-  document.getElementById('cert-form-daterecv').value = c.dateRecv || '';
-  document.getElementById('cert-form-expiry').value   = c.expiryDate || '';
-  document.getElementById('cert-form-issuedby').value = c.issuedBy || '';
-  document.getElementById('cert-form-remarks').value  = c.remarks || '';
-  formCertStatus = c.certStatus;
-  document.querySelectorAll('.status-opt').forEach(b => { b.className = 'status-opt'; });
-  const cls = { received: 'sel-received', pending: 'sel-pending', missing: 'sel-missing' };
-  if (c.certStatus) document.getElementById('cst-' + c.certStatus).classList.add(cls[c.certStatus]);
-  document.getElementById('modal-cert').classList.add('open');
-}
-function deleteCertFromDetail() {
-  const c = allCerts.find(x => x.id === currentCertDetailId);
-  if (!c) return;
-  showConfirm('🗑️', 'Delete Certificate?', '"' + c.siteId + '" certificate will be permanently removed.', async () => {
-    await certDelete(currentCertDetailId); closeCertDetailModal();
-    allCerts = await certGetAll();
-    allCerts.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-    renderCertList(); updateCertNavCount(); showToast('🗑️ Certificate deleted');
-  });
-}
-function shareCertWhatsApp() {
-  const c = allCerts.find(x => x.id === currentCertDetailId);
-  if (!c) return;
-  const st = { received: '✅ RECEIVED', pending: '⏳ PENDING', missing: '❌ MISSING' }[c.certStatus] || c.certStatus.toUpperCase();
-  let msg = '*AA CERTIFICATE INFO*\n';
-  msg += 'Telecom Site Certificate - ' + new Date().toLocaleDateString('en-GB') + '\n\n';
-  msg += 'Site ID: ' + c.siteId + '\n';
-  msg += 'Status: ' + st + '\n';
-  if (c.hqRef)      msg += 'HQ Ref: ' + c.hqRef + '\n';
-  if (c.dateRecv)   msg += 'Date Received: ' + new Date(c.dateRecv).toLocaleDateString('en-GB') + '\n';
-  if (c.expiryDate) msg += 'Expiry: ' + new Date(c.expiryDate).toLocaleDateString('en-GB') + '\n';
-  if (c.issuedBy)   msg += 'Issued By: ' + c.issuedBy + '\n';
-  if (c.remarks)    msg += 'Remarks: ' + c.remarks + '\n';
-  msg += '\nSent from AA & PADLOCK INFO PWA';
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+const getReq = store.get(siteId);
+
+getReq.onsuccess=()=>{
+
+let data = getReq.result;
+data.certificate = val;
+
+store.put(data);
+
+};
 }
 
-// ═══════════════════════════════════════════════
-//  SETTINGS ACTIONS
-// ═══════════════════════════════════════════════
-function confirmClearData() {
-  showConfirm('🗑️', 'Clear All Data?', 'All ' + allSites.length + ' sites will be permanently deleted.', async () => {
-    await dbClear(); await loadAll(); showToast('🗑️ All data cleared');
-  });
-}
-function confirmResetDB() {
-  showConfirm('⚠️', 'Reset Database?', 'IndexedDB will be deleted and recreated. All data will be lost.', async () => {
-    db.close();
-    const req = indexedDB.deleteDatabase(DB_NAME);
-    req.onsuccess = async () => { await openDB(); await loadAll(); showToast('✅ Database reset complete'); };
-    req.onerror = () => showToast('❌ Reset failed');
-  });
+function generatePDF(siteId){
+
+const tx = db.transaction("sites","readonly");
+const store = tx.objectStore("sites");
+
+const req = store.get(siteId);
+
+req.onsuccess=()=>{
+
+const site = req.result;
+
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF();
+
+doc.text("AA INFO Site Report",20,20);
+
+doc.text("Site ID: "+site.siteId,20,40);
+doc.text("AA Status: "+site.aaStatus,20,50);
+doc.text("Certificate: "+site.certificate,20,60);
+doc.text("Notes: "+site.notes,20,70);
+
+doc.save(site.siteId+".pdf");
+
+};
 }
 
-// ═══════════════════════════════════════════════
-//  EXPORT JSON
-// ═══════════════════════════════════════════════
-async function exportJSON() {
-  const sites = await dbGetAll();
-  const certs = await certGetAll();
-  const blob = new Blob([JSON.stringify({ version: '2.0', exportedAt: new Date().toISOString(), sites, certs }, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'AA-Padlock-Backup-' + new Date().toISOString().split('T')[0] + '.json';
-  a.click(); URL.revokeObjectURL(url);
-  showToast('💾 Backup exported!');
+function shareWhatsApp(siteId){
+
+const tx = db.transaction("sites","readonly");
+const store = tx.objectStore("sites");
+
+const req = store.get(siteId);
+
+req.onsuccess=()=>{
+
+const site = req.result;
+
+const text =
+`AA INFO SITE
+Site ID: ${site.siteId}
+AA Status: ${site.aaStatus}
+Certificate: ${site.certificate}
+Notes: ${site.notes}`;
+
+window.open(
+"https://wa.me/?text="+encodeURIComponent(text),
+"_blank"
+);
+
+};
 }
 
-// ═══════════════════════════════════════════════
-//  IMPORT JSON
-// ═══════════════════════════════════════════════
-function importJSON(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    try {
-      const parsed = JSON.parse(e.target.result);
-      const sites = parsed.sites || (Array.isArray(parsed) ? parsed : []);
-      const certs = parsed.certs || [];
-      const total = sites.length + certs.length;
-      if (!total) { showToast('⚠️ No data found in file'); return; }
-      showConfirm('📥', 'Import ' + total + ' records?', sites.length + ' sites and ' + certs.length + ' certificates. Existing matching records will be overwritten.', async () => {
-        let count = 0;
-        for (const s of sites) { try { s.updatedAt = s.updatedAt || new Date().toISOString(); s.createdAt = s.createdAt || s.updatedAt; await dbPut(s); count++; } catch(ex) {} }
-        for (const c of certs) { try { c.updatedAt = c.updatedAt || new Date().toISOString(); c.createdAt = c.createdAt || c.updatedAt; await certPut(c); count++; } catch(ex) {} }
-        await loadAll(); showToast('✅ Imported ' + count + ' records!');
-      });
-    } catch(ex) { showToast('❌ Invalid JSON file'); }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
+function exportJSON(){
+
+const tx = db.transaction("sites","readonly");
+const store = tx.objectStore("sites");
+
+const req = store.getAll();
+
+req.onsuccess=()=>{
+
+const blob = new Blob(
+[JSON.stringify(req.result,null,2)],
+{type:"application/json"}
+);
+
+const a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "aa-info-backup.json";
+a.click();
+
+};
 }
 
-// ═══════════════════════════════════════════════
-//  PDF REPORT
-// ═══════════════════════════════════════════════
-async function generatePDF() {
-  if (!window.jspdf) { showToast('⚠️ PDF library loading…'); return; }
-  showToast('📄 Generating PDF…');
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const sites = await dbGetAll();
-  sites.sort((a, b) => a.siteId.localeCompare(b.siteId));
-  const pageW = 210, margin = 15, colW = pageW - margin * 2;
-  let y = 20;
-  doc.setFillColor(26, 58, 107);
-  doc.roundedRect(margin, y - 6, colW, 28, 4, 4, 'F');
-  doc.setTextColor(255, 255, 255); doc.setFontSize(18); doc.setFont('helvetica', 'bold');
-  doc.text('AA & PADLOCK INFO', margin + 8, y + 6);
-  doc.setFontSize(9); doc.setFont('helvetica', 'normal');
-  doc.text('Telecom Site Management Report', margin + 8, y + 13);
-  doc.text('Generated: ' + new Date().toLocaleString(), margin + 8, y + 19);
-  y += 36;
-  const aaYes = sites.filter(s => s.aa === 'yes').length;
-  const aaNO  = sites.filter(s => s.aa === 'no').length;
-  const plYes = sites.filter(s => s.padlock === 'yes').length;
-  const statW = colW / 4;
-  [{label:'Total Sites',val:sites.length,r:26,g:58,b:107},{label:'AA YES',val:aaYes,r:22,g:163,b:74},{label:'AA NO',val:aaNO,r:220,g:38,b:38},{label:'Padlock YES',val:plYes,r:21,g:128,b:61}].forEach((st, i) => {
-    const sx = margin + i * statW;
-    doc.setFillColor(st.r, st.g, st.b);
-    doc.roundedRect(sx, y, statW - 3, 18, 3, 3, 'F');
-    doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont('helvetica','bold');
-    doc.text(String(st.val), sx + statW/2 - 3, y + 10, {align:'center'});
-    doc.setFontSize(7); doc.setFont('helvetica','normal');
-    doc.text(st.label, sx + statW/2 - 3, y + 15, {align:'center'});
-  });
-  y += 26;
-  const cols = { id:45, aa:22, pl:24, notes: colW - 45 - 22 - 24 };
-  doc.setFillColor(240,244,255); doc.rect(margin, y, colW, 8, 'F');
-  doc.setTextColor(26,58,107); doc.setFontSize(8); doc.setFont('helvetica','bold');
-  let cx = margin + 3;
-  doc.text('SITE ID', cx, y+5.5); cx += cols.id;
-  doc.text('AA', cx, y+5.5); cx += cols.aa;
-  doc.text('PADLOCK', cx, y+5.5); cx += cols.pl;
-  doc.text('NOTES', cx, y+5.5); y += 10;
-  doc.setFont('helvetica','normal');
-  sites.forEach((s, idx) => {
-    if (y > 270) { doc.addPage(); y = 20; }
-    if (idx % 2 === 0) { doc.setFillColor(248,250,255); doc.rect(margin, y-1, colW, 9, 'F'); }
-    doc.setTextColor(26,58,107); doc.setFontSize(8); doc.setFont('helvetica','bold');
-    cx = margin + 3; doc.text(s.siteId.substring(0,18), cx, y+5.5);
-    cx += cols.id;
-    if (s.aa === 'yes') { doc.setFillColor(220,252,231); doc.setTextColor(22,163,74); } else { doc.setFillColor(254,226,226); doc.setTextColor(220,38,38); }
-    doc.roundedRect(cx, y+1, 16, 6, 1.5, 1.5, 'F'); doc.setFontSize(7); doc.setFont('helvetica','bold');
-    doc.text(s.aa.toUpperCase(), cx+8, y+5.5, {align:'center'});
-    cx += cols.aa;
-    if (s.padlock === 'yes') { doc.setFillColor(220,252,231); doc.setTextColor(21,128,61); } else { doc.setFillColor(254,226,226); doc.setTextColor(185,28,28); }
-    doc.roundedRect(cx, y+1, 18, 6, 1.5, 1.5, 'F');
-    doc.text(s.padlock.toUpperCase(), cx+9, y+5.5, {align:'center'});
-    cx += cols.pl;
-    doc.setTextColor(80,100,140); doc.setFont('helvetica','normal'); doc.setFontSize(7);
-    const notes = ((s.aaNotes||'') + (s.padlockNotes ? ' | '+s.padlockNotes : '')).substring(0,60);
-    if (notes) doc.text(notes, cx, y+5.5);
-    y += 9;
-  });
-  y += 10; doc.setTextColor(150,150,150); doc.setFontSize(7);
-  doc.text('AA & PADLOCK INFO PWA — Confidential', pageW/2, y, {align:'center'});
-  doc.save('AA-Padlock-Report-' + new Date().toISOString().split('T')[0] + '.pdf');
-  showToast('📄 PDF downloaded!');
+function importJSON(){
+
+const file = document.getElementById("importFile").files[0];
+
+if(!file){
+alert("Select JSON File");
+return;
 }
 
-// ═══════════════════════════════════════════════
-//  PRINT SUMMARY
-// ═══════════════════════════════════════════════
-function sharePrintSummary() {
-  const sites = [...allSites].sort((a,b) => a.siteId.localeCompare(b.siteId));
-  const aaYes = sites.filter(s => s.aa==='yes').length;
-  const aaNO  = sites.filter(s => s.aa==='no').length;
-  const plYes = sites.filter(s => s.padlock==='yes').length;
-  const rows = sites.map(s =>
-    '<tr><td style="font-family:monospace;font-weight:700;color:#1a3a6b;">' + escHtml(s.siteId) + '</td>' +
-    '<td><span style="background:' + (s.aa==='yes'?'#dcfce7':'#fee2e2') + ';color:' + (s.aa==='yes'?'#16a34a':'#dc2626') + ';padding:3px 10px;border-radius:20px;font-weight:700;font-size:12px;">' + s.aa.toUpperCase() + '</span></td>' +
-    '<td><span style="background:' + (s.padlock==='yes'?'#f0fdf4':'#fef2f2') + ';color:' + (s.padlock==='yes'?'#15803d':'#b91c1c') + ';padding:3px 10px;border-radius:20px;font-weight:700;font-size:12px;">' + s.padlock.toUpperCase() + '</span></td>' +
-    '<td style="font-size:12px;color:#556;">' + escHtml(s.aaNotes||'') + '</td>' +
-    '<td style="font-size:12px;color:#556;">' + escHtml(s.padlockNotes||'') + '</td>' +
-    '<td style="font-size:11px;color:#99a;">' + escHtml(s.location||'') + '</td></tr>'
-  ).join('');
-  const win = window.open('','_blank');
-  win.document.write('<!DOCTYPE html><html><head><title>AA &amp; PADLOCK Site Report</title><style>body{font-family:Segoe UI,sans-serif;margin:30px;color:#1a1a2e;background:#fff;}h1{color:#1a3a6b;font-size:24px;margin-bottom:4px;}.sub{color:#7a90b8;font-size:14px;margin-bottom:20px;}.stats{display:flex;gap:15px;margin-bottom:25px;flex-wrap:wrap;}.stat{background:#f0f4ff;border:1.5px solid #d0ddf5;border-radius:12px;padding:14px 20px;text-align:center;min-width:110px;}.stat .n{font-size:28px;font-weight:800;color:#1a3a6b;}.stat .l{font-size:11px;color:#7a90b8;font-weight:600;margin-top:4px;}table{width:100%;border-collapse:collapse;font-size:13px;}th{background:#1a3a6b;color:white;padding:10px 12px;text-align:left;font-size:11px;letter-spacing:0.5px;}td{padding:9px 12px;border-bottom:1px solid #e8edf8;}tr:nth-child(even) td{background:#f7f9ff;}@media print{.no-print{display:none;}}</style></head><body>' +
-    '<div class="no-print" style="margin-bottom:20px;"><button onclick="window.print()" style="background:#1a3a6b;color:white;border:none;padding:10px 22px;border-radius:8px;font-size:14px;cursor:pointer;font-weight:700;">🖨️ Print</button><button onclick="window.close()" style="background:#e8edf8;color:#1a3a6b;border:none;padding:10px 22px;border-radius:8px;font-size:14px;cursor:pointer;font-weight:700;margin-left:10px;">✕ Close</button></div>' +
-    '<h1>📡 AA &amp; PADLOCK INFO</h1><div class="sub">Telecom Site Report — Generated: ' + new Date().toLocaleString() + '</div>' +
-    '<div class="stats"><div class="stat"><div class="n">' + sites.length + '</div><div class="l">Total Sites</div></div><div class="stat"><div class="n" style="color:#16a34a;">' + aaYes + '</div><div class="l">AA YES</div></div><div class="stat"><div class="n" style="color:#dc2626;">' + aaNO + '</div><div class="l">AA NO</div></div><div class="stat"><div class="n" style="color:#15803d;">' + plYes + '</div><div class="l">Padlock YES</div></div></div>' +
-    '<table><thead><tr><th>SITE ID</th><th>AA</th><th>PADLOCK</th><th>AA NOTES</th><th>PADLOCK NOTES</th><th>LOCATION</th></tr></thead><tbody>' + rows + '</tbody></table></body></html>');
-  win.document.close();
+const reader = new FileReader();
+
+reader.onload = function(){
+
+const data = JSON.parse(reader.result);
+
+const tx = db.transaction("sites","readwrite");
+const store = tx.objectStore("sites");
+
+data.forEach(item=>store.put(item));
+
+tx.oncomplete=()=>{
+alert("Import Success");
+loadSites();
+};
+};
+
+reader.readAsText(file);
 }
 
-// ═══════════════════════════════════════════════
-//  WHATSAPP
-// ═══════════════════════════════════════════════
-function buildWhatsAppMsg(sites) {
-  let msg = 'AA & PADLOCK INFO\n';
-  msg += 'Telecom Site Report - ' + new Date().toLocaleString() + '\n\n';
-  msg += 'Total Sites: ' + sites.length + '\n';
-  msg += 'AA YES: ' + sites.filter(s => s.aa==='yes').length + '\n';
-  msg += 'AA NO: '  + sites.filter(s => s.aa==='no').length  + '\n';
-  msg += 'Padlock YES: ' + sites.filter(s => s.padlock==='yes').length + '\n\n';
-  msg += '--------------------\n';
-  sites.forEach(s => {
-    msg += '\n' + s.siteId + '\n';
-    msg += '  AA: ' + (s.aa==='yes' ? 'YES' : 'NO');
-    if (s.aaNotes) msg += ' - ' + s.aaNotes;
-    msg += '\n  Padlock: ' + (s.padlock==='yes' ? 'YES' : 'NO');
-    if (s.padlockNotes) msg += ' - ' + s.padlockNotes;
-    if (s.location) msg += '\n  Location: ' + s.location;
-    msg += '\n';
-  });
-  msg += '\n--------------------\nSent from AA & PADLOCK INFO PWA';
-  return msg;
-}
-async function shareWhatsApp() {
-  const sites = await dbGetAll();
-  sites.sort((a,b) => a.siteId.localeCompare(b.siteId));
-  window.open('https://wa.me/?text=' + encodeURIComponent(buildWhatsAppMsg(sites)), '_blank');
+function printSummary(){
+window.print();
 }
 
-// ═══════════════════════════════════════════════
-//  CONFIRM DIALOG
-// ═══════════════════════════════════════════════
-function showConfirm(icon, title, msg, action) {
-  document.getElementById('confirm-icon').textContent = icon;
-  document.getElementById('confirm-title').textContent = title;
-  document.getElementById('confirm-msg').textContent = msg;
-  confirmAction = action;
-  document.getElementById('confirm-overlay').classList.add('open');
-}
-function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('open'); confirmAction = null; }
-function runConfirmAction() { closeConfirm(); if (confirmAction) confirmAction(); }
+function clearAllData(){
 
-// ═══════════════════════════════════════════════
-//  TOAST
-// ═══════════════════════════════════════════════
-let toastTimeout;
-function showToast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.classList.add('show');
-  clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => el.classList.remove('show'), 2800);
+if(confirm("Clear all data?")){
+
+const tx = db.transaction("sites","readwrite");
+const store = tx.objectStore("sites");
+
+store.clear();
+
+tx.oncomplete=()=>{
+loadSites();
+alert("Data Cleared");
+};
+}
 }
 
-// ═══════════════════════════════════════════════
-//  UTILITIES
-// ═══════════════════════════════════════════════
-function escHtml(str) {
-  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function highlightText(text, query) {
-  if (!query) return escHtml(text);
-  const escaped  = escHtml(text);
-  const escapedQ = escHtml(query).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-  return escaped.replace(new RegExp('('+escapedQ+')','gi'),'<span class="highlight">$1</span>');
+function resetDB(){
+
+indexedDB.deleteDatabase("AAINFO_DB");
+
+alert("Database Reset");
+location.reload();
 }
 
-// Modal overlay close
-document.getElementById('modal-add').addEventListener('click', function(e){ if(e.target===this) closeAddModal(); });
-document.getElementById('modal-detail').addEventListener('click', function(e){ if(e.target===this) closeDetailModal(); });
-document.getElementById('modal-cert').addEventListener('click', function(e){ if(e.target===this) closeCertModal(); });
-document.getElementById('modal-cert-detail').addEventListener('click', function(e){ if(e.target===this) closeCertDetailModal(); });
-document.getElementById('confirm-overlay').addEventListener('click', function(e){ if(e.target===this) closeConfirm(); });
+function openPage(page){
 
-// ═══════════════════════════════════════════════
-//  SERVICE WORKER
-// ═══════════════════════════════════════════════
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"));
+
+document.getElementById(page)
+.classList.add("active");
 }
 
-// ═══════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════
-(async () => {
-  await openDB();
-  await loadAll();
-  const existing = await dbGetAll();
-  if (existing.length === 0) {
-    const demos = [
-      { siteId:'SITE-001', aa:'yes', padlock:'yes', aaNotes:'Inspected and verified', padlockNotes:'Padlock secured', location:'Tower A, North Zone', updatedAt:new Date().toISOString(), createdAt:new Date().toISOString() },
-      { siteId:'SITE-002', aa:'no',  padlock:'no',  aaNotes:'Pending approval', padlockNotes:'Lock missing - urgent', location:'Tower B, East Zone', updatedAt:new Date(Date.now()-86400000).toISOString(), createdAt:new Date(Date.now()-86400000).toISOString() },
-      { siteId:'TXC-4521', aa:'yes', padlock:'no',  aaNotes:'AA signed off', padlockNotes:'Replacement ordered', location:'Rooftop Site, Sector 7', updatedAt:new Date(Date.now()-172800000).toISOString(), createdAt:new Date(Date.now()-172800000).toISOString() },
-    ];
-    for (const d of demos) await dbPut(d);
-    await loadAll();
-  }
-})();
+function switchTab(btn,page){
 
+document.querySelectorAll(".bottom-nav button")
+.forEach(b=>b.classList.remove("active"));
+
+btn.classList.add("active");
+
+openPage(page);
+}
+
+document.getElementById("searchInput")
+.addEventListener("input",function(){
+
+const value = this.value.toLowerCase();
+
+const tx = db.transaction("sites","readonly");
+const store = tx.objectStore("sites");
+
+const req = store.getAll();
+
+req.onsuccess=()=>{
+
+const filtered = req.result.filter(site=>
+site.siteId.toLowerCase().includes(value)
+);
+
+renderDashboard(filtered);
+
+};
+});
+
+document.querySelectorAll(".filterBtn")
+.forEach(btn=>{
+
+btn.addEventListener("click",()=>{
+
+document.querySelectorAll(".filterBtn")
+.forEach(b=>b.classList.remove("active"));
+
+btn.classList.add("active");
+
+const filter = btn.dataset.filter;
+
+const tx = db.transaction("sites","readonly");
+const store = tx.objectStore("sites");
+
+const req = store.getAll();
+
+req.onsuccess=()=>{
+
+let data = req.result;
+
+if(filter!=="all"){
+data = data.filter(x=>x.aaStatus===filter);
+}
+
+renderDashboard(data);
+
+};
+
+});
+});
+
+if("serviceWorker" in navigator){
+navigator.serviceWorker.register("sw.js");
+}
 </script>
+
 </body>
 </html>
