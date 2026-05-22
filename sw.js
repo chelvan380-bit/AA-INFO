@@ -1,6 +1,6 @@
 // sw.js
 
-const CACHE_NAME = "aa-info-cache-v1";
+const CACHE_NAME = "aa-info-cache-v2";
 
 const urlsToCache = [
   "./",
@@ -11,8 +11,12 @@ const urlsToCache = [
 self.addEventListener("install", event => {
 
 event.waitUntil(
+
 caches.open(CACHE_NAME)
-.then(cache => cache.addAll(urlsToCache))
+.then(cache => {
+return cache.addAll(urlsToCache);
+})
+
 );
 
 });
