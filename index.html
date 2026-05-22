@@ -2,26 +2,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>AA INFO</title>
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f4c81"/>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<meta name="theme-color" content="#0f4c81">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
+
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial, sans-serif;
+font-family:Arial,sans-serif;
 }
 
 body{
-background:#f3f6fb;
+background:#f4f7fb;
 color:#222;
 padding-bottom:90px;
 }
@@ -55,13 +60,9 @@ text-align:center;
 }
 
 .card h2{
-font-size:24px;
 margin-top:8px;
+font-size:26px;
 color:#0f4c81;
-}
-
-.search-box{
-margin-bottom:15px;
 }
 
 .search-box input{
@@ -69,6 +70,7 @@ width:100%;
 padding:12px;
 border:none;
 border-radius:10px;
+margin-bottom:15px;
 font-size:16px;
 }
 
@@ -83,7 +85,7 @@ overflow:auto;
 padding:10px 14px;
 border:none;
 border-radius:10px;
-background:#d9e7f5;
+background:#dce9f7;
 cursor:pointer;
 white-space:nowrap;
 }
@@ -116,21 +118,27 @@ margin:4px 0;
 font-size:14px;
 }
 
-textarea{
+input,select,textarea{
 width:100%;
-margin-top:8px;
-padding:10px;
-border-radius:8px;
+padding:12px;
+margin-top:10px;
+border-radius:10px;
 border:1px solid #ccc;
+}
+
+textarea{
 resize:none;
 }
 
-select,input{
+.btn{
+background:#0f4c81;
+color:white;
+border:none;
+padding:12px;
 width:100%;
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
-margin-top:8px;
+border-radius:10px;
+margin-top:12px;
+cursor:pointer;
 }
 
 .fab{
@@ -142,13 +150,10 @@ height:60px;
 border-radius:50%;
 background:#0f4c81;
 color:white;
-font-size:26px;
-display:flex;
-align-items:center;
-justify-content:center;
 border:none;
-box-shadow:0 4px 10px rgba(0,0,0,0.2);
+font-size:28px;
 cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
 .bottom-nav{
@@ -166,11 +171,11 @@ box-shadow:0 -2px 6px rgba(0,0,0,0.1);
 .bottom-nav button{
 background:none;
 border:none;
-font-size:13px;
 display:flex;
 flex-direction:column;
 align-items:center;
-color:#555;
+font-size:12px;
+color:#666;
 }
 
 .bottom-nav button.active{
@@ -186,17 +191,6 @@ display:none;
 display:block;
 }
 
-.settings-btn{
-background:#0f4c81;
-color:white;
-padding:12px;
-border:none;
-border-radius:10px;
-margin-top:10px;
-width:100%;
-cursor:pointer;
-}
-
 .latest{
 margin-top:20px;
 }
@@ -206,12 +200,16 @@ margin-bottom:10px;
 }
 
 @media(max-width:700px){
+
 .cards{
 grid-template-columns:1fr;
 }
+
 }
+
 </style>
 </head>
+
 <body>
 
 <header>AA INFO</header>
@@ -220,6 +218,7 @@ grid-template-columns:1fr;
 <div class="container page active" id="dashboardPage">
 
 <div class="cards">
+
 <div class="card">
 <div>Total Sites</div>
 <h2 id="totalSites">0</h2>
@@ -234,16 +233,26 @@ grid-template-columns:1fr;
 <div>AA NO</div>
 <h2 id="aaNo">0</h2>
 </div>
+
 </div>
 
 <div class="search-box">
-<input type="text" id="searchInput" placeholder="Search Site ID">
+<input type="text" id="searchInput"
+placeholder="Search Site ID">
 </div>
 
 <div class="filters">
-<button class="filterBtn active" data-filter="all">All</button>
-<button class="filterBtn" data-filter="Yes">AA YES</button>
-<button class="filterBtn" data-filter="No">AA NO</button>
+<button class="filterBtn active" data-filter="all">
+All
+</button>
+
+<button class="filterBtn" data-filter="Yes">
+AA YES
+</button>
+
+<button class="filterBtn" data-filter="No">
+AA NO
+</button>
 </div>
 
 <div class="site-list" id="dashboardList"></div>
@@ -260,25 +269,47 @@ grid-template-columns:1fr;
 
 <h2>Site Management</h2>
 
-<input type="text" id="siteId" placeholder="Site ID">
+<input type="text" id="siteId"
+placeholder="Enter Site ID">
 
 <select id="aaStatus">
 <option value="Yes">AA YES</option>
 <option value="No">AA NO</option>
 </select>
 
-<textarea id="siteNotes" rows="4" placeholder="Notes"></textarea>
+<textarea id="siteNotes"
+rows="4"
+placeholder="Enter Notes"></textarea>
 
-<button class="settings-btn" onclick="saveSite()">Save Site</button>
+<button class="btn" onclick="saveSite()">
+Save Site
+</button>
 
 </div>
 
-<!-- CERTIFICATE -->
+<!-- CERTIFICATE PAGE -->
 <div class="container page" id="certificatePage">
 
 <h2>AA Certificate Record</h2>
 
-<div id="certificateList"></div>
+<input type="text"
+id="certSiteId"
+placeholder="Enter Site ID">
+
+<select id="certStatus">
+<option value="Yes">YES</option>
+<option value="No">NO</option>
+</select>
+
+<button class="btn"
+onclick="saveCertificate()">
+Save Certificate
+</button>
+
+<br><br>
+
+<div id="certificateList"
+class="site-list"></div>
 
 </div>
 
@@ -287,26 +318,39 @@ grid-template-columns:1fr;
 
 <h2>Settings & Backup</h2>
 
-<button class="settings-btn" onclick="exportJSON()">Export JSON Backup</button>
+<button class="btn" onclick="exportJSON()">
+Export JSON Backup
+</button>
 
 <input type="file" id="importFile">
 
-<button class="settings-btn" onclick="importJSON()">Import JSON Backup</button>
+<button class="btn" onclick="importJSON()">
+Import JSON Backup
+</button>
 
-<button class="settings-btn" onclick="printSummary()">Print Summary</button>
+<button class="btn" onclick="printSummary()">
+Print Summary
+</button>
 
-<button class="settings-btn" onclick="clearAllData()">Clear All Data</button>
+<button class="btn" onclick="clearAllData()">
+Clear All Data
+</button>
 
-<button class="settings-btn" onclick="resetDB()">Reset IndexedDB Database</button>
+<button class="btn" onclick="resetDB()">
+Reset IndexedDB Database
+</button>
 
 </div>
 
-<button class="fab" onclick="openPage('sitePage')">
-<i class="fa fa-plus"></i>
+<button class="fab"
+onclick="openPage('sitePage')">
++
 </button>
 
 <div class="bottom-nav">
-<button class="active" onclick="switchTab(this,'dashboardPage')">
+
+<button class="active"
+onclick="switchTab(this,'dashboardPage')">
 <i class="fa fa-home"></i>
 Dashboard
 </button>
@@ -325,295 +369,446 @@ Certificate
 <i class="fa fa-gear"></i>
 Settings
 </button>
+
 </div>
 
 <script>
+
 let db;
 
-const request = indexedDB.open("AAINFO_DB",1);
+const request = indexedDB.open("AAINFO_DB",2);
 
 request.onupgradeneeded = function(e){
+
 db = e.target.result;
 
 if(!db.objectStoreNames.contains("sites")){
 db.createObjectStore("sites",{keyPath:"siteId"});
 }
+
+if(!db.objectStoreNames.contains("certificates")){
+db.createObjectStore("certificates",{keyPath:"siteId"});
+}
+
 };
 
 request.onsuccess = function(e){
+
 db = e.target.result;
+
 loadSites();
+loadCertificates();
+
 };
 
 function saveSite(){
 
-const siteId = document.getElementById("siteId").value.trim();
-const aaStatus = document.getElementById("aaStatus").value;
-const notes = document.getElementById("siteNotes").value;
+const siteId =
+document.getElementById("siteId").value.trim();
+
+const aaStatus =
+document.getElementById("aaStatus").value;
+
+const notes =
+document.getElementById("siteNotes").value;
 
 if(!siteId){
 alert("Enter Site ID");
 return;
 }
 
-const tx = db.transaction("sites","readwrite");
-const store = tx.objectStore("sites");
+const tx =
+db.transaction("sites","readwrite");
+
+const store =
+tx.objectStore("sites");
 
 store.put({
 siteId,
 aaStatus,
 notes,
-updated:new Date().toISOString(),
-certificate:"No"
+updated:new Date().toISOString()
 });
 
 tx.oncomplete = ()=>{
+
 alert("Site Saved");
+
 document.getElementById("siteId").value="";
 document.getElementById("siteNotes").value="";
+
 loadSites();
+
 };
+
 }
 
 function loadSites(){
 
-const tx = db.transaction("sites","readonly");
-const store = tx.objectStore("sites");
-const req = store.getAll();
+const tx =
+db.transaction("sites","readonly");
+
+const store =
+tx.objectStore("sites");
+
+const req =
+store.getAll();
 
 req.onsuccess = ()=>{
 
 const data = req.result;
 
-document.getElementById("totalSites").innerText = data.length;
+document.getElementById("totalSites")
+.innerText = data.length;
 
-document.getElementById("aaYes").innerText =
+document.getElementById("aaYes")
+.innerText =
 data.filter(x=>x.aaStatus==="Yes").length;
 
-document.getElementById("aaNo").innerText =
+document.getElementById("aaNo")
+.innerText =
 data.filter(x=>x.aaStatus==="No").length;
 
 renderDashboard(data);
 renderLatest(data);
-renderCertificate(data);
+
 };
+
 }
 
 function renderDashboard(data){
 
-const list = document.getElementById("dashboardList");
+const list =
+document.getElementById("dashboardList");
+
 list.innerHTML="";
 
 data.forEach(site=>{
 
-const div = document.createElement("div");
+const div =
+document.createElement("div");
+
 div.className="site-card";
 
 div.innerHTML=`
+
 <h3>${site.siteId}</h3>
+
 <p>AA Status: ${site.aaStatus}</p>
+
 <p>${site.notes || ""}</p>
 
-<button class="settings-btn" onclick="generatePDF('${site.siteId}')">
+<button class="btn"
+onclick="generatePDF('${site.siteId}')">
 Generate PDF
 </button>
 
-<button class="settings-btn" onclick="shareWhatsApp('${site.siteId}')">
+<button class="btn"
+onclick="shareWhatsApp('${site.siteId}')">
 WhatsApp Share
 </button>
+
 `;
 
 list.appendChild(div);
 
 });
+
 }
 
 function renderLatest(data){
 
-const latest = [...data]
-.sort((a,b)=>new Date(b.updated)-new Date(a.updated))
+const latest =
+[...data]
+.sort((a,b)=>
+new Date(b.updated)-new Date(a.updated))
 .slice(0,5);
 
-const list = document.getElementById("latestList");
+const list =
+document.getElementById("latestList");
+
 list.innerHTML="";
 
 latest.forEach(site=>{
 
-const div = document.createElement("div");
+const div =
+document.createElement("div");
+
 div.className="site-card";
 
 div.innerHTML=`
 <h3>${site.siteId}</h3>
-<p>Updated: ${new Date(site.updated).toLocaleString()}</p>
+<p>${new Date(site.updated)
+.toLocaleString()}</p>
 `;
 
 list.appendChild(div);
 
 });
+
 }
 
-function renderCertificate(data){
+function saveCertificate(){
 
-const list = document.getElementById("certificateList");
-list.innerHTML="";
+const siteId =
+document.getElementById("certSiteId").value;
 
-data.forEach(site=>{
+const status =
+document.getElementById("certStatus").value;
 
-const div = document.createElement("div");
-div.className="site-card";
+if(!siteId){
+alert("Enter Site ID");
+return;
+}
 
-div.innerHTML=`
-<h3>${site.siteId}</h3>
+const tx =
+db.transaction("certificates","readwrite");
 
-<select onchange="updateCertificate('${site.siteId}',this.value)">
-<option value="Yes" ${site.certificate==="Yes"?"selected":""}>YES</option>
-<option value="No" ${site.certificate==="No"?"selected":""}>NO</option>
-</select>
-`;
+const store =
+tx.objectStore("certificates");
 
-list.appendChild(div);
-
+store.put({
+siteId,
+status,
+updated:new Date().toISOString()
 });
-}
 
-function updateCertificate(siteId,val){
+tx.oncomplete = ()=>{
 
-const tx = db.transaction("sites","readwrite");
-const store = tx.objectStore("sites");
+alert("Certificate Saved");
 
-const getReq = store.get(siteId);
+document.getElementById("certSiteId").value="";
 
-getReq.onsuccess=()=>{
-
-let data = getReq.result;
-data.certificate = val;
-
-store.put(data);
+loadCertificates();
 
 };
+
+}
+
+function loadCertificates(){
+
+const tx =
+db.transaction("certificates","readonly");
+
+const store =
+tx.objectStore("certificates");
+
+const req =
+store.getAll();
+
+req.onsuccess = ()=>{
+
+const data = req.result;
+
+const list =
+document.getElementById("certificateList");
+
+list.innerHTML="";
+
+data.forEach(cert=>{
+
+const div =
+document.createElement("div");
+
+div.className="site-card";
+
+div.innerHTML=`
+
+<h3>${cert.siteId}</h3>
+
+<p>Certificate: ${cert.status}</p>
+
+`;
+
+list.appendChild(div);
+
+});
+
+};
+
 }
 
 function generatePDF(siteId){
 
-const tx = db.transaction("sites","readonly");
-const store = tx.objectStore("sites");
+const tx =
+db.transaction("sites","readonly");
 
-const req = store.get(siteId);
+const store =
+tx.objectStore("sites");
 
-req.onsuccess=()=>{
+const req =
+store.get(siteId);
+
+req.onsuccess = ()=>{
 
 const site = req.result;
 
 const { jsPDF } = window.jspdf;
+
 const doc = new jsPDF();
 
-doc.text("AA INFO Site Report",20,20);
+doc.text("AA INFO REPORT",20,20);
 
 doc.text("Site ID: "+site.siteId,20,40);
+
 doc.text("AA Status: "+site.aaStatus,20,50);
-doc.text("Certificate: "+site.certificate,20,60);
-doc.text("Notes: "+site.notes,20,70);
+
+doc.text("Notes: "+site.notes,20,60);
 
 doc.save(site.siteId+".pdf");
 
 };
+
 }
 
 function shareWhatsApp(siteId){
 
-const tx = db.transaction("sites","readonly");
-const store = tx.objectStore("sites");
+const tx =
+db.transaction("sites","readonly");
 
-const req = store.get(siteId);
+const store =
+tx.objectStore("sites");
 
-req.onsuccess=()=>{
+const req =
+store.get(siteId);
+
+req.onsuccess = ()=>{
 
 const site = req.result;
 
 const text =
-`AA INFO SITE
+`AA INFO
+
 Site ID: ${site.siteId}
+
 AA Status: ${site.aaStatus}
-Certificate: ${site.certificate}
+
 Notes: ${site.notes}`;
 
 window.open(
-"https://wa.me/?text="+encodeURIComponent(text),
+"https://wa.me/?text="+
+encodeURIComponent(text),
 "_blank"
 );
 
 };
+
 }
 
 function exportJSON(){
 
-const tx = db.transaction("sites","readonly");
-const store = tx.objectStore("sites");
+const tx1 =
+db.transaction("sites","readonly");
 
-const req = store.getAll();
+const tx2 =
+db.transaction("certificates","readonly");
 
-req.onsuccess=()=>{
+const store1 =
+tx1.objectStore("sites");
 
-const blob = new Blob(
-[JSON.stringify(req.result,null,2)],
+const store2 =
+tx2.objectStore("certificates");
+
+const req1 = store1.getAll();
+const req2 = store2.getAll();
+
+req1.onsuccess = ()=>{
+req2.onsuccess = ()=>{
+
+const backup = {
+sites:req1.result,
+certificates:req2.result
+};
+
+const blob =
+new Blob(
+[JSON.stringify(backup,null,2)],
 {type:"application/json"}
 );
 
-const a = document.createElement("a");
-a.href = URL.createObjectURL(blob);
-a.download = "aa-info-backup.json";
+const a =
+document.createElement("a");
+
+a.href =
+URL.createObjectURL(blob);
+
+a.download =
+"aa-info-backup.json";
+
 a.click();
 
 };
+};
+
 }
 
 function importJSON(){
 
-const file = document.getElementById("importFile").files[0];
+const file =
+document.getElementById("importFile")
+.files[0];
 
 if(!file){
-alert("Select JSON File");
+alert("Select JSON file");
 return;
 }
 
-const reader = new FileReader();
+const reader =
+new FileReader();
 
 reader.onload = function(){
 
-const data = JSON.parse(reader.result);
+const data =
+JSON.parse(reader.result);
 
-const tx = db.transaction("sites","readwrite");
-const store = tx.objectStore("sites");
+const tx1 =
+db.transaction("sites","readwrite");
 
-data.forEach(item=>store.put(item));
+const tx2 =
+db.transaction("certificates","readwrite");
 
-tx.oncomplete=()=>{
+const store1 =
+tx1.objectStore("sites");
+
+const store2 =
+tx2.objectStore("certificates");
+
+data.sites.forEach(x=>store1.put(x));
+
+data.certificates.forEach(x=>store2.put(x));
+
 alert("Import Success");
+
 loadSites();
-};
+loadCertificates();
+
 };
 
 reader.readAsText(file);
-}
 
-function printSummary(){
-window.print();
 }
 
 function clearAllData(){
 
 if(confirm("Clear all data?")){
 
-const tx = db.transaction("sites","readwrite");
-const store = tx.objectStore("sites");
+const tx1 =
+db.transaction("sites","readwrite");
 
-store.clear();
+const tx2 =
+db.transaction("certificates","readwrite");
 
-tx.oncomplete=()=>{
+tx1.objectStore("sites").clear();
+
+tx2.objectStore("certificates").clear();
+
+alert("All Data Cleared");
+
 loadSites();
-alert("Data Cleared");
-};
+loadCertificates();
+
 }
+
 }
 
 function resetDB(){
@@ -621,7 +816,13 @@ function resetDB(){
 indexedDB.deleteDatabase("AAINFO_DB");
 
 alert("Database Reset");
+
 location.reload();
+
+}
+
+function printSummary(){
+window.print();
 }
 
 function openPage(page){
@@ -631,6 +832,7 @@ document.querySelectorAll(".page")
 
 document.getElementById(page)
 .classList.add("active");
+
 }
 
 function switchTab(btn,page){
@@ -641,27 +843,36 @@ document.querySelectorAll(".bottom-nav button")
 btn.classList.add("active");
 
 openPage(page);
+
 }
 
 document.getElementById("searchInput")
 .addEventListener("input",function(){
 
-const value = this.value.toLowerCase();
+const value =
+this.value.toLowerCase();
 
-const tx = db.transaction("sites","readonly");
-const store = tx.objectStore("sites");
+const tx =
+db.transaction("sites","readonly");
 
-const req = store.getAll();
+const store =
+tx.objectStore("sites");
 
-req.onsuccess=()=>{
+const req =
+store.getAll();
 
-const filtered = req.result.filter(site=>
-site.siteId.toLowerCase().includes(value)
+req.onsuccess = ()=>{
+
+const filtered =
+req.result.filter(site=>
+site.siteId.toLowerCase()
+.includes(value)
 );
 
 renderDashboard(filtered);
 
 };
+
 });
 
 document.querySelectorAll(".filterBtn")
@@ -674,19 +885,27 @@ document.querySelectorAll(".filterBtn")
 
 btn.classList.add("active");
 
-const filter = btn.dataset.filter;
+const filter =
+btn.dataset.filter;
 
-const tx = db.transaction("sites","readonly");
-const store = tx.objectStore("sites");
+const tx =
+db.transaction("sites","readonly");
 
-const req = store.getAll();
+const store =
+tx.objectStore("sites");
 
-req.onsuccess=()=>{
+const req =
+store.getAll();
+
+req.onsuccess = ()=>{
 
 let data = req.result;
 
 if(filter!=="all"){
-data = data.filter(x=>x.aaStatus===filter);
+data =
+data.filter(x=>
+x.aaStatus===filter
+);
 }
 
 renderDashboard(data);
@@ -694,11 +913,13 @@ renderDashboard(data);
 };
 
 });
+
 });
 
 if("serviceWorker" in navigator){
 navigator.serviceWorker.register("sw.js");
 }
+
 </script>
 
 </body>
